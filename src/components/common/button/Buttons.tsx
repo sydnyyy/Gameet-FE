@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@heroui/react";
 import { useState } from "react";
 
@@ -9,6 +10,8 @@ export interface ButtonProps {
   changeColor?: string;
   textColor?: string;
   onClick: () => void;
+  isLoading?: boolean;
+  type: "submit" | "button";
 }
 
 export default function Buttons({
@@ -17,26 +20,20 @@ export default function Buttons({
   height,
   content,
   onClick,
-  textColor,
-  changeColor,
+  textColor = "text-white",
 }: ButtonProps) {
-  const [btnColor, setBtnColor] = useState(color);
+  const bgColor = `bg-${color}-500`;
 
-  // 2초 뒤 실행 함수
   const handleButton = () => {
-    setTimeout(() => {
-      if (changeColor) {
-        setBtnColor(changeColor);
-      }
-
+    if (onClick) {
       onClick();
-    }, 2000);
+    }
   };
 
   return (
     <Button
       disableRipple
-      className={`${btnColor} ${textColor}`}
+      className={`${bgColor} ${textColor}`}
       style={{ width, height }}
       onPress={handleButton}
       children={<>{content}</>}

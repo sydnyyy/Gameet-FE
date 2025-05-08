@@ -42,9 +42,14 @@ type Story = StoryObj<typeof meta>;
 
 export const StoryButtons: Story = {
   render: args => {
+    const handleButtons = () => {
+      args.onClick();
+      console.log("1234");
+    };
+
     return (
       <div className="w-full h-[500px] flex-center">
-        <Buttons {...args} />
+        <Buttons {...args} onClick={handleButtons} />
       </div>
     );
   },
@@ -55,6 +60,7 @@ export const StoryButtons: Story = {
     content: "버튼",
     textColor: "text-blue",
     changeColor: "bg-purple-500",
+    type: "button",
     onClick: () => console.log("기본 클릭"),
   },
 };
