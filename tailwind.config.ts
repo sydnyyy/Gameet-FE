@@ -2,6 +2,20 @@ import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
 const { heroui } = require("@heroui/react");
 
+const colors = [
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "purple",
+  "pink",
+  "stone",
+  "gray",
+  "orange",
+  "teal",
+  "cyan",
+];
+
 const config: Config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -17,6 +31,7 @@ const config: Config = {
       },
     },
   },
+  safelist: colors.map(color => `bg-${color}-500`),
   plugins: [
     plugin(function ({ addComponents }) {
       addComponents({
