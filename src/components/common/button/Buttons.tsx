@@ -3,10 +3,10 @@ import { Button } from "@heroui/react";
 import { useState } from "react";
 
 export interface ButtonProps {
+  children: React.ReactNode;
   color: string;
   width: string;
   height: string;
-  content: string;
   changeColor?: string;
   textColor?: string;
   onClick: () => void;
@@ -15,11 +15,12 @@ export interface ButtonProps {
 }
 
 export default function Buttons({
+  children,
   color,
   width,
   height,
-  content,
   onClick,
+  type = "button",
   textColor = "text-white",
 }: ButtonProps) {
   const bgColor = `bg-${color}-500`;
@@ -36,7 +37,8 @@ export default function Buttons({
       className={`${bgColor} ${textColor}`}
       style={{ width, height }}
       onPress={handleButton}
-      children={<>{content}</>}
+      children={<>{children}</>}
+      type={type}
     />
   );
 }
