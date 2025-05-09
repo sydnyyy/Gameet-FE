@@ -17,7 +17,7 @@ const meta = {
       description: "버튼 높이",
       control: "text",
     },
-    content: {
+    children: {
       description: "버튼 안에 표시할 텍스트",
       control: "text",
     },
@@ -57,7 +57,7 @@ export const StoryButtons: Story = {
     color: "bg-red-500",
     width: "100px",
     height: "100px",
-    content: "버튼",
+    children: "버튼",
     textColor: "text-blue",
     changeColor: "bg-purple-500",
     type: "button",
