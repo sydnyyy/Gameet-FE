@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
-const { heroui } = require("@heroui/react");
+const { heroui } = require("@heroui/theme");
 
 const colors = [
   "red",
@@ -26,6 +26,20 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        // 메인 배경용
+        background: "#353238",
+
+        // 헤더나 카드용 서브 배경
+        surface: "#403A45",
+
+        // 포인트 보라색
+        primary: {
+          DEFAULT: "#8C56D3",
+          dark: "#7A41C2", // hover 시 어두운 보라색
+          light: "#A774E6", // hover 시 밝은 보라색
+        },
+      },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },
