@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
+
 const { heroui } = require("@heroui/theme");
 
 const colors = [
@@ -38,6 +39,7 @@ const config: Config = {
           DEFAULT: "#8C56D3",
           dark: "#7A41C2", // hover 시 어두운 보라색
           light: "#A774E6", // hover 시 밝은 보라색
+          gray: "#999090",
         },
       },
       fontFamily: {

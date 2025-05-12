@@ -8,7 +8,7 @@ export default function Home() {
   const [text, setText] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+    <div className="flex flex-col items-center justify-center bg-background">
       {/* Button을 클릭하면 2초 뒤 alert가 뜬다 */}
       <Buttons
         color="red"
