@@ -40,13 +40,7 @@ export default function Home() {
         onClick={() => setText("버튼 누름")}
       />
       {text && <p>{text}</p>}
-      <Inputs
-        children="이메일"
-        width="w-[500px]"
-        height="h-[50px]"
-        label="이메일을 입력하세요."
-        type="email"
-      ></Inputs>
+      <Inputs width="400px" height="50px" label="이메일" type="email" />
     </div>
   );
 }
