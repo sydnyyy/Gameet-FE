@@ -20,6 +20,9 @@ export default function NavMenu() {
         <li className={isActive("/match")}>
           <Link href="/match">매칭하기</Link>
         </li>
+        <li className={isActive("/profile")}>
+          <Link href="/profile">프로필(임시)</Link>
+        </li>
       </ul>
     </nav>
   );
