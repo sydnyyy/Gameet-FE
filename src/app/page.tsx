@@ -1,46 +1,20 @@
-"use client";
 import Buttons from "@/components/common/button/Buttons";
-import Inputs from "@/components/common/input/Inputs";
-import { Button } from "@heroui/react";
-import { useState } from "react";
+import GameSlider from "@/components/main/gameSlider";
+import TextSlider from "@/components/main/textSlider";
 
 export default function Home() {
-  const [text, setText] = useState<string | null>(null);
-
   return (
-    <div className="flex flex-col items-center justify-center bg-background">
-      {/* Button을 클릭하면 2초 뒤 alert가 뜬다 */}
+    <div className="flex flex-col items-center box-border">
+      <GameSlider />
+      <TextSlider />
       <Buttons
-        color="red"
-        width="100px"
-        height="100px"
-        children="버튼"
+        children="매칭하기"
+        width="250px"
+        height="70px"
+        size="lg"
         type="button"
-        textColor="text-white"
-        onClick={() => alert("안녕하세요")}
+        className="text-[28px] font-bold my-16"
       />
-      <Button color="primary">Button</Button>
-      {/* 2. Button을 클릭하면 2초 뒤 버튼 색상 변경 */}
-      <Buttons
-        color="yellow"
-        width="100px"
-        height="100px"
-        type="button"
-        children="버튼"
-        changeColor="bg-purple-500"
-        onClick={() => null}
-      />
-      {/* 3. Button을 클릭하면 2초 뒤 텍스트 표시 */}
-      <Buttons
-        color="blue"
-        width="100px"
-        height="100px"
-        type="button"
-        children="버튼"
-        onClick={() => setText("버튼 누름")}
-      />
-      {text && <p>{text}</p>}
-      <Inputs width="400px" height="50px" label="이메일" type="email" />
     </div>
   );
 }
