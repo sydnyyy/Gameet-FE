@@ -30,6 +30,7 @@ export default function Buttons({
   return (
     <Button
       {...props}
+      disableRipple
       className={`${bgColor} ${textColor} ${className} font-semibold`}
       style={{ width, height }}
       onPress={handleClick}
