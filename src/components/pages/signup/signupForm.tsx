@@ -32,13 +32,18 @@ export default function SignUpForm() {
           </Buttons>
         </div>
 
-        <Inputs
-          name="text"
-          label="인증번호"
-          type="numeric"
-          inputMode="numeric"
-          rules={authCodeValid}
-        />
+        <div className="flex gap-2">
+          <Inputs
+            name="text"
+            label="인증번호"
+            type="numeric"
+            inputMode="numeric"
+            rules={authCodeValid}
+          />
+          <Buttons type="button" className="h-[48px] my-1">
+            인증 확인
+          </Buttons>
+        </div>
 
         <Inputs name="password" label="비밀번호" type="password" rules={passwordValid} />
         <Inputs
