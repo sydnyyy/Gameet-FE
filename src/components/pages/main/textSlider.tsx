@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { useSlider } from "@/hooks/useSlider";
+import { useSlider } from "@/hooks/pages/main/useSlider";
 
 export default function TextSlider() {
   const gameGenres = [

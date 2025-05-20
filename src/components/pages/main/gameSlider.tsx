@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import clsx from "clsx";
-import { useSlider } from "@/hooks/useSlider";
+import { useSlider } from "@/hooks/pages/main/useSlider";
 
 interface GameImageProps {
   src: string;
