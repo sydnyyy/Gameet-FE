@@ -35,6 +35,7 @@ export default function Inputs({ name, rules, defaultValue, type, ...props }: In
     <Input
       {...props}
       {...field}
+      type={type}
       value={field.value ?? ""}
       onChange={handleChange}
       onBlur={field.onBlur}
