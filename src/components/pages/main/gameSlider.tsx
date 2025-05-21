@@ -22,7 +22,14 @@ function GameImage({ src, alt, variant }: GameImageProps) {
         }[variant],
       )}
     >
-      <Image src={src} alt={alt} fill className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover"
+        loading={variant === "current" ? "eager" : "lazy"}
+        priority={variant === "current"}
+      />
     </div>
   );
 }
