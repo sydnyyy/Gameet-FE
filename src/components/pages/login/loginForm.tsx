@@ -26,9 +26,14 @@ export default function LoginForm() {
         </div>
       </CheckboxGroup>
 
-      <Buttons type="submit" className="h-[48px] text-md">
+      <Buttons type="submit" className="h-[48px] text-md" isDisabled={!methods.formState.isValid}>
         로그인
       </Buttons>
+      {error && (
+        <p className="mt-2 text-md text-red-500">
+          {typeof error === "string" ? error : "로그인에 실패했습니다."}
+        </p>
+      )}
 
       <div className="flex justify-center gap-5 items-center text-primary-gray my-3">
         <Link href="/find-password">비밀번호 찾기</Link>

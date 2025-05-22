@@ -34,7 +34,7 @@ export function useApi<T = any>() {
         setData(res.data);
         return res;
       } catch (err: any) {
-        setError(err?.response?.data?.message || "에러가 발생했습니다.");
+        setError(err?.response?.data || "에러가 발생했습니다.");
         throw err;
       } finally {
         setLoading(false);
