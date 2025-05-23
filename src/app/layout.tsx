@@ -18,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="dark min-h-screen flex flex-col">
         <Header />
-        <HeroUIProvider className="flex-1 pt-[80px]">{children}</HeroUIProvider>
+        <HeroUIProvider className="flex flex-col flex-1 min-h-0 pt-[80px]">
+          {children}
+        </HeroUIProvider>
         <Footer />
       </body>
     </html>
