@@ -5,15 +5,9 @@ interface BaseCheckboxProps
   extends Omit<CheckboxProps, "onChange" | "checked" | "errorMessage" | "isInvalid"> {
   name: string;
   rules?: RegisterOptions;
-  defaultValue?: boolean;
 }
 
-export default function BaseCheckbox({
-  name,
-  rules,
-  defaultValue = false,
-  ...props
-}: BaseCheckboxProps) {
+export default function BaseCheckbox({ name, rules, ...props }: BaseCheckboxProps) {
   const { control } = useFormContext();
 
   const {
@@ -23,13 +17,13 @@ export default function BaseCheckbox({
     name,
     control,
     rules,
-    defaultValue,
   });
 
   return (
     <Checkbox
       {...props}
       checked={field.value}
+      defaultSelected={field.value}
       onChange={field.onChange}
       onBlur={field.onBlur}
       isInvalid={!!error}
