@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
-import { useApi } from "@/hooks/useApi";
+import { apiRequest } from "@/app/api/apiRequest";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 
 export interface SignUpFormData {
   email: string;
@@ -20,46 +21,63 @@ export function useSignUpForm() {
     },
   });
 
-  const { request, error } = useApi();
   const email = methods.watch("email");
   const code = methods.watch("authCode");
 
-  const onSubmit = async (formData: SignUpFormData) => {
-    try {
+  // 회원가입
+  const signUpMutation = useMutation({
+    mutationFn: async (formData: SignUpFormData) => {
       const { email, password } = formData;
-      await request("/users/auth/sign-up/user", "POST", {
+      return await apiRequest("/users/auth/sign-up/user", "POST", {
         email,
         password,
       });
+    },
+    onSuccess: () => {
       console.log("회원가입 성공:");
       router.push("/login");
-    } catch (e) {
-      console.log("회원가입 실패:", e);
-    }
-  };
+    },
+    onError: (error: any) => {
+      console.log("회원가입 실패:", error);
+    },
+  });
 
-  const handleSendEmailAuth = async () => {
-    try {
-      await request("/users/auth/sign-up/send-code", "POST", { email });
+  // 이메일 인증 함수
+  const sendEmailAuthMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("/users/auth/sign-up/send-code", "POST", { email });
+    },
+    onSuccess: () => {
       console.log("인증번호 전송 성공");
-    } catch (e) {
-      console.log("인증번호 전송 실패", e);
-    }
-  };
+    },
+    onError: (error: any) => {
+      console.log("인증번호 전송 실패", error);
+    },
+  });
 
-  const handleVerifyEmailAuth = async () => {
-    try {
-      await request("/users/auth/sign-up/verify-code", "POST", { email, code });
-    } catch (e) {
-      console.log("인증번호 확인 실패", e);
-    }
+  // 이메일 인증 코드 확인
+  const verifyEmailAuthMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("/users/auth/sign-up/verify-code", "POST", { email, code });
+    },
+    onSuccess: () => {
+      console.log("인증번호 확인 성공");
+    },
+    onError: (e: any) => {
+      console.log("인증번호 확인 실패", e?.response?.data || e.message);
+    },
+  });
+
+  const onSubmit = (formData: SignUpFormData) => {
+    signUpMutation.mutate(formData);
   };
 
   return {
     methods,
     onSubmit,
-    error,
-    handleSendEmailAuth,
-    handleVerifyEmailAuth,
+    signUpError: signUpMutation.error,
+    isSignUpLoading: signUpMutation.isPending,
+    sendEmailAuth: sendEmailAuthMutation.mutate,
+    verifyEmailAuth: verifyEmailAuthMutation.mutate,
   };
 }
