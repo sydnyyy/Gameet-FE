@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import clsx from "clsx";
-import { useSlider } from "@/hooks/useSlider";
+import { useSlider } from "@/hooks/pages/main/useSlider";
 
 interface GameImageProps {
   src: string;
@@ -22,7 +22,14 @@ function GameImage({ src, alt, variant }: GameImageProps) {
         }[variant],
       )}
     >
-      <Image src={src} alt={alt} fill className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover"
+        loading={variant === "current" ? "eager" : "lazy"}
+        priority={variant === "current"}
+      />
     </div>
   );
 }

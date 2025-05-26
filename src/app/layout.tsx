@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { HeroUIProvider } from "@heroui/react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "겜밋 | GAMEET",
@@ -18,7 +19,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="dark min-h-screen flex flex-col">
         <Header />
-        <HeroUIProvider className="flex-1 pt-[80px]">{children}</HeroUIProvider>
+        <Providers>
+          <HeroUIProvider className="flex flex-col flex-1 min-h-0 pt-[80px]">
+            {children}
+          </HeroUIProvider>
+        </Providers>
         <Footer />
       </body>
     </html>

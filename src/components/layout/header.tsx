@@ -1,6 +1,6 @@
 import Logo from "@/../public/icons/Gameet-Logo.svg";
-import Link from "next/link";
 import NavMenu from "../nav/navMenu";
+import AuthActions from "./authActions";
 
 export default function Header() {
   return (
@@ -10,7 +10,7 @@ export default function Header() {
       </div>
       <NavMenu />
       <div>
-        <Link href="/login">로그인</Link>
+        <AuthActions />
       </div>
     </header>
   );
