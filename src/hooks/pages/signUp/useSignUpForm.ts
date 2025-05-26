@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { apiRequest } from "@/app/api/apiRequest";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import { useEmailVerify } from "./useEmailVerify";
 
 export interface SignUpFormData {
   email: string;
@@ -21,17 +22,19 @@ export function useSignUpForm() {
     },
   });
 
-  const email = methods.watch("email");
-  const code = methods.watch("authCode");
-
   // 회원가입
   const signUpMutation = useMutation({
     mutationFn: async (formData: SignUpFormData) => {
       const { email, password } = formData;
-      return await apiRequest("/users/auth/sign-up/user", "POST", {
-        email,
-        password,
-      });
+      return await apiRequest(
+        "/users/auth/sign-up/user",
+        "POST",
+        {
+          email,
+          password,
+        },
+        { skipAuth: true },
+      );
     },
     onSuccess: () => {
       console.log("회원가입 성공:");
@@ -42,30 +45,12 @@ export function useSignUpForm() {
     },
   });
 
-  // 이메일 인증 함수
-  const sendEmailAuthMutation = useMutation({
-    mutationFn: async () => {
-      return await apiRequest("/users/auth/sign-up/send-code", "POST", { email });
-    },
-    onSuccess: () => {
-      console.log("인증번호 전송 성공");
-    },
-    onError: (error: any) => {
-      console.log("인증번호 전송 실패", error);
-    },
-  });
-
-  // 이메일 인증 코드 확인
-  const verifyEmailAuthMutation = useMutation({
-    mutationFn: async () => {
-      return await apiRequest("/users/auth/sign-up/verify-code", "POST", { email, code });
-    },
-    onSuccess: () => {
-      console.log("인증번호 확인 성공");
-    },
-    onError: (e: any) => {
-      console.log("인증번호 확인 실패", e?.response?.data || e.message);
-    },
+  const { isEmailSend, isEmailVerify, sendCode, verifyCode } = useEmailVerify({
+    email: methods.watch("email"),
+    code: methods.watch("authCode"),
+    watch: methods.watch,
+    setError: methods.setError,
+    clearErrors: methods.clearErrors,
   });
 
   const onSubmit = (formData: SignUpFormData) => {
@@ -75,9 +60,11 @@ export function useSignUpForm() {
   return {
     methods,
     onSubmit,
+    isEmailSend,
+    isEmailVerify,
     signUpError: signUpMutation.error,
     isSignUpLoading: signUpMutation.isPending,
-    sendEmailAuth: sendEmailAuthMutation.mutate,
-    verifyEmailAuth: verifyEmailAuthMutation.mutate,
+    sendEmailAuth: sendCode,
+    verifyEmailAuth: verifyCode,
   };
 }
