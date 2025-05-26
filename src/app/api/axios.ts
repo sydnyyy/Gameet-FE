@@ -44,7 +44,7 @@ axiosInstance.interceptors.response.use(
         // 재발급 실패 시 토큰 초기화
         clearToken();
         if (typeof window !== "undefined") {
-          // window.location.href = "/";
+          window.location.href = "/";
         }
         return Promise.reject(reissueError);
       }
