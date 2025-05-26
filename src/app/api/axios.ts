@@ -22,6 +22,11 @@ axiosInstance.interceptors.response.use(
     const originReq = error.config;
     const { setToken, clearToken } = useAuthStore.getState();
 
+    // skipAuth 값이 true인 경우 재발급 X
+    if (originReq.skipAuth) {
+      return Promise.reject(error);
+    }
+
     // accessToken 만료 시 재시도
     if (error.response?.status === 401 && !originReq._retry) {
       originReq._retry = true;
