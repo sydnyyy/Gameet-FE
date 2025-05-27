@@ -13,7 +13,6 @@ export default function FormLayout<T extends FieldValues>({
   methods,
   onSubmit,
   children,
-  error,
 }: FormLayoutProps<T>) {
   return (
     <FormProvider {...methods}>
@@ -22,7 +21,6 @@ export default function FormLayout<T extends FieldValues>({
         className="flex flex-col gap-3 w-full max-w-md p-12 justify-center"
       >
         {children}
-        {error && <p className="text-red-500">{error}</p>}
       </form>
     </FormProvider>
   );
