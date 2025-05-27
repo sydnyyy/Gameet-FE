@@ -31,14 +31,17 @@ export function useLoginForm() {
     setMounted(true);
   }, [methods]);
 
-  const { setToken, rememberMe, setRememberMe } = useAuthStore();
+  const { setToken, setEmail, rememberMe, setRememberMe } = useAuthStore();
 
   // 로그인
   const loginMutation = useMutation({
     mutationFn: async (formData: LoginFormData) => {
       // req에 saveId 제외
       const { saveId, ...data } = formData;
-      const res = await apiRequest<{ authrization?: string }>("/users/auth/login", "POST", data);
+      type LoginResponse = {
+        role: "GUEST" | "USER" | "ADMIN";
+      };
+      const res = await apiRequest<LoginResponse>("/users/auth/login", "POST", data);
       return { res, saveId, email: formData.email, rememberMe };
     },
     onSuccess: ({ res, saveId, email, rememberMe }) => {
@@ -51,8 +54,14 @@ export function useLoginForm() {
 
       if (token) {
         setToken(token);
-        console.log("로그인 성공");
-        router.push("/");
+        setEmail(email);
+        const userRole = res.data?.role;
+
+        if (userRole === "GUEST") {
+          router.push("/profile");
+        } else {
+          router.push("/");
+        }
       } else {
         console.warn("토큰 받기 실패");
       }
