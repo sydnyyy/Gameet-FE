@@ -11,3 +11,7 @@ export interface CombinedFormData {
   is_adult_match_allowed: boolean;
   is_voice: boolean;
 }
+
+export type ProfileFormHookReturn = ReturnType<
+  typeof import("@/hooks/pages/profile/useProfileForm").useProfileForm
+>;

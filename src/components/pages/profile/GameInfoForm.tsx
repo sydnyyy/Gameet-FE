@@ -1,53 +1,25 @@
 "use client";
 
-import { apiRequest } from "@/app/api/apiRequest";
-import { useMatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
-import { useAuthStore } from "@/store/useAuthStore";
-import { CombinedFormData } from "@/types/profile";
-import { useRouter } from "next/navigation";
-import { UseFormReturn } from "react-hook-form";
+import { ProfileFormHookReturn } from "@/types/profile";
 
-interface Props {
-  methods: UseFormReturn<CombinedFormData>;
-  onBack: () => void;
-}
-
-export default function GameInfoForm({ methods, onBack }: Props) {
-  const router = useRouter();
-  const { email, role } = useAuthStore.getState();
-
-  const codeOptions = useMatchingCodeOptions();
+export default function GameInfoForm({
+  methods,
+  codeOptions,
+  watchedPlatforms,
+  watchedPreferredGenres,
+  watchedPlayStyle,
+  watchedGameSkillLevel,
+  watchedIsVoice,
+  watchedIsAdultMatchAllowed,
+  setStep,
+  handleSubmit,
+}: ProfileFormHookReturn) {
   if (!codeOptions) return <div>Loading...</div>;
 
   const platforms = Object.entries(codeOptions.GAME_PLATFORM);
   const preferred_genres = Object.entries(codeOptions.PREFERRED_GENRE);
   const play_style = Object.entries(codeOptions.PLAY_STYLE);
   const game_skill_level = Object.entries(codeOptions.GAME_SKILL_LEVEL);
-
-  // 개별 watch 사용
-  const watchedPlatforms = methods.watch("platforms") || [];
-  const watchedPreferredGenres = methods.watch("preferred_genres") || [];
-  const watchedPlayStyle = methods.watch("play_style") || "";
-  const watchedGameSkillLevel = methods.watch("game_skill_level") || "";
-  const watchedIsVoice = methods.watch("is_voice") ?? false;
-  const watchedIsAdultMatchAllowed = methods.watch("is_adult_match_allowed") ?? false;
-
-  const handleSubmit = async (data: CombinedFormData) => {
-    try {
-      const method = role === "GUEST" ? "POST" : "PUT";
-      await apiRequest<{ available: boolean }>(`/users/profile`, method, data);
-
-      if (role === "GUEST") {
-        alert("프로필 생성이 완료되었습니다.");
-      } else {
-        alert("프로필 수정이 완료되었습니다.");
-      }
-
-      router.push("/");
-    } catch (error: any) {
-      alert(error?.request?.responseText || "오류가 발생했습니다.");
-    }
-  };
 
   return (
     <>
@@ -162,7 +134,7 @@ export default function GameInfoForm({ methods, onBack }: Props) {
       </div>
 
       <div className="flex justify-between mt-6">
-        <button type="button" className="px-6 py-2 border rounded" onClick={onBack}>
+        <button type="button" className="px-6 py-2 border rounded" onClick={() => setStep(1)}>
           이전
         </button>
         <button
