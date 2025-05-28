@@ -5,6 +5,13 @@ export interface CodeOptions {
   [key: string]: Record<string, string>;
 }
 
+export interface MatchingCodeOptions {
+  GAME_PLATFORM: Record<string, string>;
+  PREFERRED_GENRE: Record<string, string>;
+  PLAY_STYLE: Record<string, string>;
+  GAME_SKILL_LEVEL: Record<string, string>;
+}
+
 export const useMatchingCodeOptions = () => {
   const [options, setOptions] = useState<CodeOptions | null>(null);
 

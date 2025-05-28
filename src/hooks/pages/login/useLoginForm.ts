@@ -31,7 +31,7 @@ export function useLoginForm() {
     setMounted(true);
   }, [methods]);
 
-  const { setToken, setEmail, rememberMe, setRememberMe } = useAuthStore();
+  const { setToken, setEmail, setRole, rememberMe, setRememberMe } = useAuthStore();
 
   // 로그인
   const loginMutation = useMutation({
@@ -48,14 +48,15 @@ export function useLoginForm() {
       console.log("로그인 완료:", res);
       const token = res.headers.authorization;
       setRememberMe(rememberMe);
+      setEmail(email);
 
       // 아이디 저장인 경우 로컬 스토리지에 저장
       saveId && email ? localStorage.setItem("saveId", email) : localStorage.removeItem("saveId");
 
       if (token) {
         setToken(token);
-        setEmail(email);
         const userRole = res.data?.role;
+        setRole(userRole);
 
         if (userRole === "GUEST") {
           router.push("/profile");

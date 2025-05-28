@@ -4,38 +4,29 @@ import { apiRequest } from "@/app/api/apiRequest";
 import Buttons from "@/components/common/button/Buttons";
 import Inputs from "@/components/common/input/Inputs";
 import FormLayout from "@/components/form/formLayout";
-import { useMatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { CombinedFormData } from "@/types/profile";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import GameInfoForm from "./GameInfoForm";
 
-export interface CombinedFormData {
-  email: string;
-  nickname: string;
-  age: number;
-  show_age: boolean;
-  gender: "M" | "F" | "N";
-  platforms: string[];
-  preferred_genres: string[];
-  play_style: string;
-  game_skill_level: string;
-  is_adult_match_allowed: boolean;
-  is_voice: boolean;
-}
+const GENDERS = [
+  { value: "M", label: "남성" },
+  { value: "F", label: "여성" },
+  { value: "N", label: "비공개" },
+] as const;
 
 export default function ProfileForm() {
-  const router = useRouter();
-  const { email } = useAuthStore.getState();
+  const { email, role } = useAuthStore.getState();
+
   const [step, setStep] = useState(1);
   const [nicknameChecked, setNicknameChecked] = useState(false);
 
   const methods = useForm<CombinedFormData>({
     mode: "onChange",
     defaultValues: {
-      email: "",
       nickname: "",
-      age: 0,
+      age: undefined,
       show_age: true,
       gender: "N",
       platforms: [],
@@ -44,25 +35,20 @@ export default function ProfileForm() {
       game_skill_level: "",
       is_adult_match_allowed: false,
       is_voice: false,
+      email: email ?? "",
     },
   });
 
   const showAge = methods.watch("show_age");
+  const age = methods.watch("age");
 
   useEffect(() => {
-    methods.setValue("email", email ?? "");
-  }, [email]);
+    if (email) methods.setValue("email", email);
+  }, [email, methods]);
 
-  const codeOptions = useMatchingCodeOptions();
-  if (!codeOptions) return <div>Loading...</div>;
-  const platforms = Object.entries(codeOptions.GAME_PLATFORM);
-  const preferred_genres = Object.entries(codeOptions.PREFERRED_GENRE);
-  const play_style = Object.entries(codeOptions.PLAY_STYLE);
-  const game_skill_level = Object.entries(codeOptions.GAME_SKILL_LEVEL);
-  
+  const handleNicknameCheck = useCallback(async () => {
+    const nickname = methods.getValues("nickname").trim();
 
-  const handleNicknameCheck = async () => {
-    const nickname = methods.getValues("nickname");
     if (!nickname) {
       alert("닉네임을 입력해주세요");
       return;
@@ -71,7 +57,7 @@ export default function ProfileForm() {
     try {
       const res = await apiRequest<{ available: boolean }>(
         `/users/profile/nickname-available?nickname=${encodeURIComponent(nickname)}`,
-        "GET"
+        "GET",
       );
 
       if (res.data) {
@@ -84,27 +70,29 @@ export default function ProfileForm() {
     } catch {
       alert("닉네임 확인 중 오류가 발생했습니다.");
     }
-  };
+  }, [methods]);
 
-  const toggleGenre = (genre: CombinedFormData["preferred_genres"][number]) => {
-    const current = methods.getValues("preferred_genres");
-    if (current.includes(genre)) {
-      methods.setValue("preferred_genres", current.filter((g) => g !== genre));
-    } else {
-      methods.setValue("preferred_genres", [...current, genre]);
+  const handleNextStep = () => {
+    if (!nicknameChecked) {
+      alert("닉네임 중복확인을 해주세요.");
+      return;
     }
+
+    if (age === undefined || age === null || age < 1) {
+      alert("나이는 1 이상이어야 합니다.");
+      return;
+    }
+
+    setStep(2);
   };
 
   const handleSubmit = async (data: CombinedFormData) => {
     try {
-      await apiRequest<{ available: boolean }>(
-        `/users/profile`,
-        "POST",
-        data
-      );
-      router.push("/");
+      const method = role === "GUEST" ? "POST" : "PUT";
+      await apiRequest(`/users/profile`, method, data);
+      alert(role === "GUEST" ? "프로필 생성이 완료되었습니다." : "프로필 수정이 완료되었습니다.");
     } catch (error: any) {
-      alert(error.request.responseText);
+      alert(error?.request?.responseText || "오류가 발생했습니다.");
     }
   };
 
@@ -113,7 +101,9 @@ export default function ProfileForm() {
       {step === 1 && (
         <>
           <h2 className="text-xl font-semibold mb-4">프로필 정보를 입력하세요</h2>
+
           <Inputs name="email" label="이메일" disabled />
+
           <div className="flex gap-2">
             <Inputs {...methods.register("nickname")} name="nickname" label="닉네임" />
             <Buttons type="button" className="h-[48px] my-1" onClick={handleNicknameCheck}>
@@ -122,183 +112,45 @@ export default function ProfileForm() {
           </div>
 
           <div className="flex gap-2">
-            <Inputs {...methods.register("age")} name="age" label="나이" type="number"/>
+            <Inputs
+              {...methods.register("age")}
+              name="age"
+              label="나이"
+              type="number"
+              defaultValue=""
+            />
             <Buttons
               type="button"
               className={`h-[48px] my-1 ${!showAge ? "bg-black text-white" : ""}`}
-              onClick={() => {
-                methods.setValue("show_age", !showAge);
-              }}
+              onClick={() => methods.setValue("show_age", !showAge)}
             >
               ✓ 비공개
             </Buttons>
           </div>
 
-          <label className="text-sm">성별</label>
-          <div className="flex gap-2">
-            {["M", "F", "N"].map((g) => (
+          <label className="text-sm mb-1 block">성별</label>
+          <div className="flex gap-2 mb-6">
+            {GENDERS.map(({ value, label }) => (
               <button
-                key={g}
+                key={value}
                 type="button"
                 className={`border rounded px-4 py-2 text-sm ${
-                  methods.watch("gender") === g ? "bg-gray-500 text-white" : ""
+                  methods.watch("gender") === value ? "bg-gray-500 text-white" : ""
                 }`}
-                onClick={() => methods.setValue("gender", g as "M" | "F" | "N")}
+                onClick={() => methods.setValue("gender", value)}
               >
-                {g === "M" ? "남성" : g === "F" ? "여성" : "비공개"}
+                {label}
               </button>
             ))}
           </div>
 
-          <Buttons type="button"
-            isDisabled={!nicknameChecked}
-            onClick={() => setStep(2)}
-          >
+          <Buttons type="button" isDisabled={!nicknameChecked} onClick={handleNextStep}>
             다음
           </Buttons>
         </>
       )}
 
-      {step === 2 && (
-        <>
-          <h2 className="text-xl font-semibold mb-4">내 게임 정보를 알려주세요</h2>
-
-          <label className="text-sm">플랫폼</label>
-          <div className="flex gap-2 mb-2">
-            {platforms.map(([key, label]) => {
-              const selected = methods.watch("platforms") || [];
-              const isActive = selected.includes(key);
-
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  className={`border rounded px-4 py-2 text-sm ${isActive ? "bg-gray-500 text-white" : ""}`}
-                  onClick={() => {
-                    const updated = isActive
-                      ? selected.filter((item) => item !== key)
-                      : [...selected, key];
-                    methods.setValue("platforms", updated);
-                  }}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-
-          <label className="text-sm">선호 장르</label>
-          <div className="flex gap-2 flex-wrap mb-2">
-            {preferred_genres.map(([key, label]) => {
-              const selected = methods.watch("preferred_genres") || [];
-              const isActive = selected.includes(key);
-
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  className={`border rounded px-4 py-2 text-sm ${isActive ? "bg-gray-500 text-white" : ""}`}
-                  onClick={() => {
-                    const updated = isActive
-                      ? selected.filter((item) => item !== key)
-                      : [...selected, key];
-                    methods.setValue("preferred_genres", updated);
-                  }}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-
-          <label className="text-sm">플레이 스타일</label>
-          <div className="flex gap-2 mb-2">
-            {play_style.map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                className={`border rounded px-4 py-2 text-sm ${
-                  methods.watch("play_style") === key ? "bg-gray-500 text-white" : ""
-                }`}
-                onClick={() => methods.setValue("play_style", key)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <label className="text-sm">게임 실력</label>
-          <div className="flex gap-2 mb-2">
-            {game_skill_level.map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                className={`border rounded px-4 py-2 text-sm ${
-                  methods.watch("game_skill_level") === key ? "bg-gray-500 text-white" : ""
-                }`}
-                onClick={() => methods.setValue("game_skill_level", key)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <label className="text-sm">마이크 사용 가능 여부</label>
-          <div className="flex gap-2 mb-2">
-            <button
-              type="button"
-              className={`border rounded px-4 py-2 text-sm ${
-                methods.watch("is_voice") === true ? "bg-gray-500 text-white" : ""
-              }`}
-              onClick={() => methods.setValue("is_voice", true)}
-            >
-              가능
-            </button>
-            <button
-              type="button"
-              className={`border rounded px-4 py-2 text-sm ${
-                methods.watch("is_voice") === false ? "bg-gray-500 text-white" : ""
-              }`}
-              onClick={() => methods.setValue("is_voice", false)}
-            >
-              불가능
-            </button>
-          </div>
-
-          <label className="text-sm">매칭 상대 미성년 여부</label>
-          <div className="flex gap-2 mb-2">
-            <button
-              type="button"
-              className={`border rounded px-4 py-2 text-sm ${
-                methods.watch("is_adult_match_allowed") === true ? "bg-gray-500 text-white" : ""
-              }`}
-              onClick={() => methods.setValue("is_adult_match_allowed", true)}
-            >
-              가능
-            </button>
-            <button
-              type="button"
-              className={`border rounded px-4 py-2 text-sm ${
-                methods.watch("is_adult_match_allowed") === false ? "bg-gray-500 text-white" : ""
-              }`}
-              onClick={() => methods.setValue("is_adult_match_allowed", false)}
-            >
-              불가능
-            </button>
-          </div>
-
-          <div className="flex justify-between mt-6">
-            <button
-              type="button"
-              className="px-6 py-2 border rounded"
-              onClick={() => setStep(1)}
-            >
-              이전
-            </button>
-            <Buttons type="submit">완료</Buttons>
-          </div>
-        </>
-      )}
+      {step === 2 && <GameInfoForm methods={methods} onBack={() => setStep(1)} />}
     </FormLayout>
   );
 }

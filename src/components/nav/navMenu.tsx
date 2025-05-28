@@ -21,7 +21,7 @@ export default function NavMenu() {
           <Link href="/match">매칭하기</Link>
         </li>
         <li className={isActive("/profile")}>
-          <Link href="/profile">프로필(임시)</Link>
+          <Link href="/profile">마이페이지</Link>
         </li>
       </ul>
     </nav>
