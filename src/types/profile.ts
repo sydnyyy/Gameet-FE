@@ -1,13 +1,13 @@
 import { MatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
 import { UseFormReturn } from "react-hook-form";
 
-export interface CombinedFormData {
+export interface ProfileFormType {
   email: string;
   nickname: string;
   age: number;
   show_age: boolean;
   gender: "M" | "F" | "N";
-  platforms: string[];
+  game_platforms: string[];
   preferred_genres: string[];
   play_style: string;
   game_skill_level: string;
@@ -16,15 +16,24 @@ export interface CombinedFormData {
 }
 
 export interface UserInfoFormProps {
-  methods: UseFormReturn<CombinedFormData>;
+  methods: UseFormReturn<ProfileFormType>;
   setStep: (step: number) => void;
   nicknameChecked: boolean;
   handleNicknameCheck: () => void;
 }
 
 export interface GameInfoFormProps {
-  methods: UseFormReturn<CombinedFormData>;
+  methods: UseFormReturn<ProfileFormType>;
   codeOptions: MatchingCodeOptions | null;
-  setStep: (step: number) => void;
-  handleSubmit: (data: CombinedFormData) => Promise<void>;
+  setStep?: (step: number) => void;
+  handleSubmit: (data: ProfileFormType) => void;
+}
+
+export interface ProfileFormType {
+  game_platforms: string[];
+  preferred_genres: string[];
+  play_style: string;
+  game_skill_level: string;
+  is_voice: boolean;
+  is_adult_match_allowed: boolean;
 }

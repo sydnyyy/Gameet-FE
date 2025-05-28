@@ -1,5 +1,7 @@
 "use client";
 
+import Buttons from "@/components/common/button/Buttons";
+import ToggleButton from "@/components/common/button/ToggleButton";
 import { GameInfoFormProps } from "@/types/profile";
 
 export default function GameInfoForm({
@@ -10,12 +12,12 @@ export default function GameInfoForm({
 }: GameInfoFormProps) {
   if (!codeOptions) return <div>Loading...</div>;
 
-  const platforms = Object.entries(codeOptions.GAME_PLATFORM);
+  const game_platforms = Object.entries(codeOptions.GAME_PLATFORM);
   const preferred_genres = Object.entries(codeOptions.PREFERRED_GENRE);
   const play_style = Object.entries(codeOptions.PLAY_STYLE);
   const game_skill_level = Object.entries(codeOptions.GAME_SKILL_LEVEL);
 
-  const watchedPlatforms = methods.watch("platforms") || [];
+  const watchedGamePlatforms = methods.watch("game_platforms") || [];
   const watchedPreferredGenres = methods.watch("preferred_genres") || [];
   const watchedPlayStyle = methods.watch("play_style") || "";
   const watchedGameSkillLevel = methods.watch("game_skill_level") || "";
@@ -28,22 +30,21 @@ export default function GameInfoForm({
 
       <label className="text-sm">플랫폼</label>
       <div className="flex gap-2 mb-2">
-        {platforms.map(([key, label]) => {
-          const isActive = watchedPlatforms.includes(key);
+        {game_platforms.map(([key, label]) => {
+          const isActive = watchedGamePlatforms.includes(key);
           return (
-            <button
+            <ToggleButton
               key={key}
-              type="button"
-              className={`border rounded px-4 py-2 text-sm ${isActive ? "bg-gray-500 text-white" : ""}`}
+              isActive={isActive}
               onClick={() => {
                 const updated = isActive
-                  ? watchedPlatforms.filter(item => item !== key)
-                  : [...watchedPlatforms, key];
-                methods.setValue("platforms", updated);
+                  ? watchedGamePlatforms.filter(item => item !== key)
+                  : [...watchedGamePlatforms, key];
+                methods.setValue("game_platforms", updated);
               }}
             >
               {label}
-            </button>
+            </ToggleButton>
           );
         })}
       </div>
@@ -53,10 +54,9 @@ export default function GameInfoForm({
         {preferred_genres.map(([key, label]) => {
           const isActive = watchedPreferredGenres.includes(key);
           return (
-            <button
+            <ToggleButton
               key={key}
-              type="button"
-              className={`border rounded px-4 py-2 text-sm ${isActive ? "bg-gray-500 text-white" : ""}`}
+              isActive={isActive}
               onClick={() => {
                 const updated = isActive
                   ? watchedPreferredGenres.filter(item => item !== key)
@@ -65,7 +65,7 @@ export default function GameInfoForm({
               }}
             >
               {label}
-            </button>
+            </ToggleButton>
           );
         })}
       </div>
@@ -73,78 +73,69 @@ export default function GameInfoForm({
       <label className="text-sm">플레이 스타일</label>
       <div className="flex gap-2 mb-2">
         {play_style.map(([key, label]) => (
-          <button
+          <ToggleButton
             key={key}
-            type="button"
-            className={`border rounded px-4 py-2 text-sm ${watchedPlayStyle === key ? "bg-gray-500 text-white" : ""}`}
+            isActive={watchedPlayStyle === key}
             onClick={() => methods.setValue("play_style", key)}
           >
             {label}
-          </button>
+          </ToggleButton>
         ))}
       </div>
 
       <label className="text-sm">게임 실력</label>
       <div className="flex gap-2 mb-2">
         {game_skill_level.map(([key, label]) => (
-          <button
+          <ToggleButton
             key={key}
-            type="button"
-            className={`border rounded px-4 py-2 text-sm ${watchedGameSkillLevel === key ? "bg-gray-500 text-white" : ""}`}
+            isActive={watchedGameSkillLevel === key}
             onClick={() => methods.setValue("game_skill_level", key)}
           >
             {label}
-          </button>
+          </ToggleButton>
         ))}
       </div>
 
       <label className="text-sm">마이크 사용 가능 여부</label>
       <div className="flex gap-2 mb-2">
-        <button
-          type="button"
-          className={`border rounded px-4 py-2 text-sm ${watchedIsVoice ? "bg-gray-500 text-white" : ""}`}
+        <ToggleButton
+          isActive={watchedIsVoice === true}
           onClick={() => methods.setValue("is_voice", true)}
         >
           가능
-        </button>
-        <button
-          type="button"
-          className={`border rounded px-4 py-2 text-sm ${!watchedIsVoice ? "bg-gray-500 text-white" : ""}`}
+        </ToggleButton>
+        <ToggleButton
+          isActive={watchedIsVoice === false}
           onClick={() => methods.setValue("is_voice", false)}
         >
           불가능
-        </button>
+        </ToggleButton>
       </div>
 
       <label className="text-sm">매칭 상대 미성년 여부</label>
       <div className="flex gap-2 mb-2">
-        <button
-          type="button"
-          className={`border rounded px-4 py-2 text-sm ${watchedIsAdultMatchAllowed ? "bg-gray-500 text-white" : ""}`}
+        <ToggleButton
+          isActive={watchedIsAdultMatchAllowed === true}
           onClick={() => methods.setValue("is_adult_match_allowed", true)}
         >
           가능
-        </button>
-        <button
-          type="button"
-          className={`border rounded px-4 py-2 text-sm ${!watchedIsAdultMatchAllowed ? "bg-gray-500 text-white" : ""}`}
+        </ToggleButton>
+        <ToggleButton
+          isActive={watchedIsAdultMatchAllowed === false}
           onClick={() => methods.setValue("is_adult_match_allowed", false)}
         >
           불가능
-        </button>
+        </ToggleButton>
       </div>
 
       <div className="flex justify-between mt-6">
-        <button type="button" className="px-6 py-2 border rounded" onClick={() => setStep(1)}>
+        <button type="button" className="px-6 py-2 border rounded" onClick={() => setStep?.(1)}>
           이전
         </button>
-        <button
-          type="submit"
-          onClick={methods.handleSubmit(handleSubmit)}
-          className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
+
+        <Buttons type="submit" onClick={methods.handleSubmit(handleSubmit)}>
           완료
-        </button>
+        </Buttons>
       </div>
     </>
   );

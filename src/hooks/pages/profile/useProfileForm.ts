@@ -1,14 +1,14 @@
 import { apiRequest } from "@/app/api/apiRequest";
 import { useMatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
-import { CombinedFormData } from "@/types/profile";
+import { ProfileFormType } from "@/types/profile";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 // 닉네임 변경 감지
 function useWatchNicknameChange(
-  methods: ReturnType<typeof useForm<CombinedFormData>>,
+  methods: ReturnType<typeof useForm<ProfileFormType>>,
   originalNickname: string,
   nicknameChecked: boolean,
   setNicknameChecked: (checked: boolean) => void,
@@ -39,7 +39,7 @@ export function useProfileForm() {
     original: "",
   });
 
-  const methods = useForm<CombinedFormData>({
+  const methods = useForm<ProfileFormType>({
     mode: "onChange",
     defaultValues: {
       email: email ?? "",
@@ -47,7 +47,7 @@ export function useProfileForm() {
       age: undefined,
       show_age: true,
       gender: "N",
-      platforms: [],
+      game_platforms: [],
       preferred_genres: [],
       play_style: "",
       game_skill_level: "",
@@ -61,7 +61,7 @@ export function useProfileForm() {
   // 기존 프로필 데이터 가져오기
   const fetchProfileData = useCallback(async () => {
     try {
-      const res = await apiRequest<CombinedFormData>(`/users/profile`, "GET");
+      const res = await apiRequest<ProfileFormType>(`/users/profile`, "GET");
       methods.reset(res.data);
       setNicknameState({
         checked: true,
@@ -109,7 +109,7 @@ export function useProfileForm() {
   }, [methods]);
 
   // 프로필 제출 핸들러
-  const handleSubmit = async (data: CombinedFormData) => {
+  const handleSubmit = async (data: ProfileFormType) => {
     try {
       const method = role === "GUEST" ? "POST" : "PUT";
       await apiRequest(`/users/profile`, method, data);
@@ -127,7 +127,7 @@ export function useProfileForm() {
     showAge: methods.watch("show_age"),
     age: methods.watch("age"),
     gender: methods.watch("gender"),
-    platforms: methods.watch("platforms") || [],
+    game_platforms: methods.watch("game_platforms") || [],
     preferredGenres: methods.watch("preferred_genres") || [],
     playStyle: methods.watch("play_style") || "",
     gameSkillLevel: methods.watch("game_skill_level") || "",

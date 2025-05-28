@@ -1,6 +1,7 @@
 "use client";
 
 import Buttons from "@/components/common/button/Buttons";
+import ToggleButton from "@/components/common/button/ToggleButton";
 import Inputs from "@/components/common/input/Inputs";
 import { UserInfoFormProps } from "@/types/profile";
 
@@ -38,7 +39,6 @@ export default function UserInfoForm({
   return (
     <>
       <h2 className="text-xl font-semibold mb-4">프로필 정보를 입력하세요</h2>
-
       <Inputs name="email" label="이메일" disabled />
 
       <div className="flex gap-2">
@@ -58,7 +58,7 @@ export default function UserInfoForm({
         />
         <Buttons
           type="button"
-          className={`h-[48px] my-1 ${!watchedShowAge ? "bg-black text-white" : ""}`}
+          className={`h-[48px] my-1 ${!watchedShowAge ? "border bg-transparent text-white" : ""}`}
           onClick={() => methods.setValue("show_age", !watchedShowAge)}
         >
           ✓ 비공개
@@ -68,16 +68,13 @@ export default function UserInfoForm({
       <label className="text-sm mb-1 block">성별</label>
       <div className="flex gap-2 mb-6">
         {GENDERS.map(({ value, label }) => (
-          <button
+          <ToggleButton
             key={value}
-            type="button"
-            className={`border rounded px-4 py-2 text-sm ${
-              watchedGender === value ? "bg-gray-500 text-white" : ""
-            }`}
+            isActive={watchedGender === value}
             onClick={() => methods.setValue("gender", value)}
           >
             {label}
-          </button>
+          </ToggleButton>
         ))}
       </div>
 
