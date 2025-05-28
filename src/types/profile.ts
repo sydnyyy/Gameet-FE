@@ -1,3 +1,6 @@
+import { MatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
+import { UseFormReturn } from "react-hook-form";
+
 export interface CombinedFormData {
   email: string;
   nickname: string;
@@ -12,6 +15,16 @@ export interface CombinedFormData {
   is_voice: boolean;
 }
 
-export type ProfileFormHookReturn = ReturnType<
-  typeof import("@/hooks/pages/profile/useProfileForm").useProfileForm
->;
+export interface UserInfoFormProps {
+  methods: UseFormReturn<CombinedFormData>;
+  setStep: (step: number) => void;
+  nicknameChecked: boolean;
+  handleNicknameCheck: () => void;
+}
+
+export interface GameInfoFormProps {
+  methods: UseFormReturn<CombinedFormData>;
+  codeOptions: MatchingCodeOptions | null;
+  setStep: (step: number) => void;
+  handleSubmit: (data: CombinedFormData) => Promise<void>;
+}

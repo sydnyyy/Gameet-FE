@@ -1,25 +1,26 @@
 "use client";
 
-import { ProfileFormHookReturn } from "@/types/profile";
+import { GameInfoFormProps } from "@/types/profile";
 
 export default function GameInfoForm({
   methods,
   codeOptions,
-  watchedPlatforms,
-  watchedPreferredGenres,
-  watchedPlayStyle,
-  watchedGameSkillLevel,
-  watchedIsVoice,
-  watchedIsAdultMatchAllowed,
   setStep,
   handleSubmit,
-}: ProfileFormHookReturn) {
+}: GameInfoFormProps) {
   if (!codeOptions) return <div>Loading...</div>;
 
   const platforms = Object.entries(codeOptions.GAME_PLATFORM);
   const preferred_genres = Object.entries(codeOptions.PREFERRED_GENRE);
   const play_style = Object.entries(codeOptions.PLAY_STYLE);
   const game_skill_level = Object.entries(codeOptions.GAME_SKILL_LEVEL);
+
+  const watchedPlatforms = methods.watch("platforms") || [];
+  const watchedPreferredGenres = methods.watch("preferred_genres") || [];
+  const watchedPlayStyle = methods.watch("play_style") || "";
+  const watchedGameSkillLevel = methods.watch("game_skill_level") || "";
+  const watchedIsVoice = methods.watch("is_voice") ?? true;
+  const watchedIsAdultMatchAllowed = methods.watch("is_adult_match_allowed") ?? true;
 
   return (
     <>

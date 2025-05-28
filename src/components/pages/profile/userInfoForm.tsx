@@ -2,7 +2,7 @@
 
 import Buttons from "@/components/common/button/Buttons";
 import Inputs from "@/components/common/input/Inputs";
-import { ProfileFormHookReturn } from "@/types/profile";
+import { UserInfoFormProps } from "@/types/profile";
 
 const GENDERS = [
   { value: "M", label: "남성" },
@@ -14,11 +14,12 @@ export default function UserInfoForm({
   methods,
   setStep,
   nicknameChecked,
-  watchedShowAge,
-  watchedAge,
-  watchedGender,
   handleNicknameCheck,
-}: ProfileFormHookReturn) {
+}: UserInfoFormProps) {
+  const watchedShowAge = methods.watch("show_age");
+  const watchedAge = methods.watch("age");
+  const watchedGender = methods.watch("gender");
+
   // 다음 단계로 이동
   const handleNextStep = () => {
     if (!nicknameChecked) {
