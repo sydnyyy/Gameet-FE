@@ -26,6 +26,7 @@ function GameImage({ src, alt, variant }: GameImageProps) {
         src={src}
         alt={alt}
         fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 600px, 700px"
         className="object-cover"
         loading={variant === "current" ? "eager" : "lazy"}
         priority={variant === "current"}
