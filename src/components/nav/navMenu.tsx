@@ -14,9 +14,6 @@ export default function NavMenu() {
   return (
     <nav>
       <ul className="flex gap-20">
-        <li className={isActive("/")}>
-          <Link href="/">메인</Link>
-        </li>
         <li className={isActive("/match")}>
           <Link href="/match">매칭하기</Link>
         </li>
