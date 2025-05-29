@@ -1,7 +1,9 @@
+"use client";
 import { apiRequest } from "@/app/api/apiRequest";
 import { useMatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ProfileFormType } from "@/types/profile";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -59,28 +61,37 @@ export function useProfileForm() {
   const codeOptions = useMatchingCodeOptions();
 
   // 기존 프로필 데이터 가져오기
-  const fetchProfileData = useCallback(async () => {
-    try {
+  const {
+    data,
+    error,
+    isPending: isProfileLoading,
+  } = useQuery<ProfileFormType, Error>({
+    queryKey: ["userProfile", email],
+    queryFn: async () => {
       const res = await apiRequest<ProfileFormType>(`/users/profile`, "GET");
-      methods.reset(res.data);
+      return res.data;
+    },
+    enabled: role !== "GUEST",
+    refetchOnWindowFocus: false,
+  });
+
+  // data 존재 여부 확인 추가
+  useEffect(() => {
+    if (data && !isProfileLoading) {
+      methods.reset(data);
       setNicknameState({
         checked: true,
-        original: res.data.nickname,
+        original: data.nickname,
       });
-    } catch (error: any) {
-      const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "프로필 데이터를 불러오는데 실패했습니다.";
-      alert(msg);
     }
-  }, [methods]);
+  }, [isProfileLoading, data, methods]);
 
   useEffect(() => {
-    if (role !== "GUEST") {
-      fetchProfileData();
+    if (error) {
+      const msg = error.message || "프로필 데이터 불러오기 실패";
+      alert(msg);
     }
-  }, [role, fetchProfileData]);
+  }, [error]);
 
   useWatchNicknameChange(methods, nicknameState.original, nicknameState.checked, checked =>
     setNicknameState(prev => ({ ...prev, checked })),
