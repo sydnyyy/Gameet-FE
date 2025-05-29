@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/store/useAuthStore";
-import axios from "axios";
+import { handleAxiosError } from "@/utils/handleAxiosError";
+import axios, { AxiosError } from "axios";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -51,10 +52,11 @@ axiosInstance.interceptors.response.use(
         if (typeof window !== "undefined") {
           window.location.href = "/";
         }
-        return Promise.reject(reissueError);
+        return Promise.reject(handleAxiosError(reissueError as AxiosError));
       }
     }
-    return Promise.reject(error);
+
+    return Promise.reject(handleAxiosError(error));
   },
 );
 

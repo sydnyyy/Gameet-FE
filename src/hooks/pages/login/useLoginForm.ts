@@ -68,8 +68,10 @@ export function useLoginForm() {
       }
     },
     onError: (error: any) => {
-      const errorMessage = error?.response?.data || "알 수 없는 오류 발생";
-      console.log("로그인 실패:", errorMessage);
+      methods.setError("root", {
+        type: "server",
+        message: error.message || "로그인에 실패했습니다.",
+      });
     },
   });
 
