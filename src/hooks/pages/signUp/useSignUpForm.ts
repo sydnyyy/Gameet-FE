@@ -2,7 +2,8 @@ import { useForm } from "react-hook-form";
 import { apiRequest } from "@/app/api/apiRequest";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { useEmailVerify } from "./useEmailVerify";
+import { useEmailVerify } from "../../auth/useEmailVerify";
+import { EmailVerifyType } from "@/constants/auth/EmailVerifyType";
 
 export interface SignUpFormData {
   email: string;
@@ -64,7 +65,7 @@ export function useSignUpForm() {
     isEmailVerify,
     signUpError: signUpMutation.error,
     isSignUpLoading: signUpMutation.isPending,
-    sendEmailAuth: sendCode,
-    verifyEmailAuth: verifyCode,
+    sendEmailAuth: () => sendCode(EmailVerifyType.SIGN_UP),
+    verifyEmailAuth: () => verifyCode(EmailVerifyType.SIGN_UP),
   };
 }
