@@ -1,6 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
+import Buttons from "./Buttons";
+import clsx from "clsx";
 
 interface ToggleButtonProps {
   isActive: boolean;
@@ -10,14 +12,15 @@ interface ToggleButtonProps {
 
 export default function ToggleButton({ isActive, onClick, children }: ToggleButtonProps) {
   return (
-    <button
+    <Buttons
       type="button"
       onClick={onClick}
-      className={`border rounded px-4 py-2 text-sm transition-colors duration-150 ${
-        isActive ? "bg-primary text-white" : "bg-transparent-200 text-white"
-      }`}
+      className={clsx("rounded-full transition-colors duration-150 h-8", {
+        "bg-primary text-white": isActive,
+        "bg-[#a391ba49] bg-opacity-70 text-white": !isActive,
+      })}
     >
       {children}
-    </button>
+    </Buttons>
   );
 }

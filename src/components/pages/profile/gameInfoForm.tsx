@@ -28,7 +28,7 @@ export default function GameInfoForm({
     <>
       <h2 className="text-xl font-semibold mb-4">내 게임 정보를 알려주세요</h2>
 
-      <label className="text-sm">플랫폼</label>
+      <label className="info-label">플랫폼</label>
       <div className="flex gap-2 mb-2">
         {game_platforms.map(([key, label]) => {
           const isActive = watchedGamePlatforms.includes(key);
@@ -49,7 +49,7 @@ export default function GameInfoForm({
         })}
       </div>
 
-      <label className="text-sm">선호 장르</label>
+      <label className="info-label">선호 장르</label>
       <div className="flex gap-2 flex-wrap mb-2">
         {preferred_genres.map(([key, label]) => {
           const isActive = watchedPreferredGenres.includes(key);
@@ -70,7 +70,7 @@ export default function GameInfoForm({
         })}
       </div>
 
-      <label className="text-sm">플레이 스타일</label>
+      <label className="info-label">플레이 스타일</label>
       <div className="flex gap-2 mb-2">
         {play_style.map(([key, label]) => (
           <ToggleButton
@@ -83,7 +83,7 @@ export default function GameInfoForm({
         ))}
       </div>
 
-      <label className="text-sm">게임 실력</label>
+      <label className="info-label">게임 실력</label>
       <div className="flex gap-2 mb-2">
         {game_skill_level.map(([key, label]) => (
           <ToggleButton
@@ -96,7 +96,7 @@ export default function GameInfoForm({
         ))}
       </div>
 
-      <label className="text-sm">마이크 사용 가능 여부</label>
+      <label className="info-label">마이크 사용 가능 여부</label>
       <div className="flex gap-2 mb-2">
         <ToggleButton
           isActive={watchedIsVoice === true}
@@ -112,7 +112,7 @@ export default function GameInfoForm({
         </ToggleButton>
       </div>
 
-      <label className="text-sm">매칭 상대 미성년 여부</label>
+      <label className="info-label">매칭 상대 미성년 여부</label>
       <div className="flex gap-2 mb-2">
         <ToggleButton
           isActive={watchedIsAdultMatchAllowed === true}
@@ -129,9 +129,13 @@ export default function GameInfoForm({
       </div>
 
       <div className="flex justify-between mt-6">
-        <button type="button" className="px-6 py-2 border rounded" onClick={() => setStep?.(1)}>
+        <Buttons
+          type="button"
+          className="bg-white bg-opacity-30 text-white"
+          onClick={() => setStep?.(1)}
+        >
           이전
-        </button>
+        </Buttons>
 
         <Buttons type="submit" onClick={methods.handleSubmit(handleSubmit)}>
           완료
