@@ -2,6 +2,7 @@ import { apiRequest } from "@/app/api/apiRequest";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { UseFormClearErrors, UseFormSetError, UseFormWatch } from "react-hook-form";
+import { EmailVerifyType } from "@/constants/auth/EmailVerifyType";
 
 export function useEmailVerify({
   email,
@@ -27,9 +28,9 @@ export function useEmailVerify({
 
   // 이메일 인증 코드 전송
   const sendCode = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (type: EmailVerifyType) => {
       return await apiRequest(
-        "/users/auth/sign-up/send-code",
+        `/users/auth/${type}/send-code`,
         "POST",
         { email },
         { skipAuth: true },
@@ -48,9 +49,9 @@ export function useEmailVerify({
 
   // 인증 코드 확인
   const verifyCode = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (type: EmailVerifyType) => {
       return await apiRequest(
-        "/users/auth/sign-up/verify-code",
+        `/users/auth/${type}/verify-code`,
         "POST",
         { email, code },
         { skipAuth: true },
