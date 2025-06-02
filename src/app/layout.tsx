@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import "@/styles/globals.css";
+import "@/styles/common/globals.css";
 import { HeroUIProvider } from "@heroui/react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Providers } from "./providers";
+import AutoLogin from "@/hooks/pages/main/useRefreshLogin";
+import NotificationSocket from "@/components/socket/notificationSocket";
 
 export const metadata: Metadata = {
   title: "겜밋 | GAMEET",
@@ -16,11 +18,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className="dark min-h-screen flex flex-col">
         <Header />
         <Providers>
           <HeroUIProvider className="flex flex-col flex-1 min-h-0 pt-[80px]">
+            <AutoLogin />
+            <NotificationSocket />
             {children}
           </HeroUIProvider>
         </Providers>
