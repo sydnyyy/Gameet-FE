@@ -17,7 +17,7 @@ export default function ToggleButton({ isActive, onClick, children }: ToggleButt
       onClick={onClick}
       className={clsx("rounded-full transition-colors duration-150 h-8", {
         "bg-primary text-white": isActive,
-        "bg-[#a391ba49] bg-opacity-70 text-white": !isActive,
+        "bg-[#a391ba21] bg-opacity-70 text-white": !isActive,
       })}
     >
       {children}
