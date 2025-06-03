@@ -1,4 +1,4 @@
-# Play2Win Front-End
+# GAMEMEET Front-End
 
 ## 프로젝트 실행 방법
 
@@ -14,7 +14,7 @@ pnpm storybook // 스토리북 실행
 | :-----------------: | :---------------------------------------: |
 |    **Language**     |          JavaScript, TypeScript           |
 |    **FrameWork**    |                  Next.js                  |
-|     **Styling**     |     Tailwind CSS, Emotion, twin.macro     |
+|     **Styling**     |            Tailwind CSS, HeroUI           |
 |      **State**      |          Zustand, TanStack Query          |
 |      **Form**       |              React Hook Form              |
 |   **Lint/Format**   | ESLint (`next/core-web-vitals`), Prettier |
