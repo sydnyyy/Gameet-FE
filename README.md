@@ -1,4 +1,4 @@
-# GAMEMEET Front-End
+# GAMEET Front-End
 
 ## 프로젝트 실행 방법
 
@@ -23,7 +23,39 @@ pnpm storybook // 스토리북 실행
 
 ## 폴더 구조
 
-- 논의 중
+```
+📦 GAMEET-FE
+┣ 📂 .storybook
+┣ 📂 node_modules
+┣ 📂 public
+┃ ┣ 📂 fonts
+┃ ┣ 📂 icons
+┃ ┗ 📂 images
+┣ 📂 src
+┃ ┣ 📂 app
+┃ ┃ ┣ 📂 api
+┃ ┃ ┣ 📂 find-password
+┃ ┃ ┣ 📂 login
+┃ ┃ ┣ 📂 match
+┃ ┃ ┣ 📂 profile
+┃ ┃ ┣ 📂 signup
+┃ ┃ ┣ 📜 layout.tsx
+┃ ┃ ┣ 📜 page.tsx
+┃ ┣ 📂 components
+┃ ┃ ┣ 📂 common
+┃ ┃ ┣ 📂 form
+┃ ┃ ┣ 📂 layout
+┃ ┃ ┣ 📂 nav
+┃ ┃ ┣ 📂 pages
+┃ ┃ ┗ 📂 socket
+┃ ┣ 📂 constants
+┃ ┣ 📂 hooks
+┃ ┣ 📂 store
+┃ ┣ 📂 stories
+┃ ┣ 📂 styles
+┃ ┣ 📂 types
+┃ ┗ 📂 utils
+```
 
 ## 커밋/브랜치 컨벤션
 
