@@ -1,16 +1,30 @@
 import React from "react";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalProps as HeroModalProps,
+} from "@heroui/react";
 
-interface ModalsProps {
+interface ModalsProps extends Omit<HeroModalProps, "isOpen" | "onClose"> {
+  children: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
   headerText?: string;
-  children: React.ReactNode;
+  className?: string;
 }
 
-export default function Modals({ isOpen, onClose, headerText, children }: ModalsProps) {
+export default function Modals({
+  children,
+  isOpen,
+  onClose,
+  headerText,
+  className,
+  ...props
+}: ModalsProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} className={className} {...props}>
       <ModalContent>
         {headerText && <ModalHeader>{headerText}</ModalHeader>}
         <ModalBody>{children}</ModalBody>

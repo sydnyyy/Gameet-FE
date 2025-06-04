@@ -1,14 +1,26 @@
 import React from "react";
-import { useDisclosure } from "@heroui/react";
+import { ModalProps as HeroModalProps, useDisclosure } from "@heroui/react";
 import Modals from "@/components/common/modal/Modals";
+
+interface ModalsProps extends Omit<HeroModalProps, "isOpen" | "onClose"> {
+  children: React.ReactNode;
+  headerText?: string;
+  className?: string;
+}
 
 export function useModal() {
   const disclosure = useDisclosure();
-  const { onOpen } = disclosure;
+  const { isOpen, onOpen, onClose } = disclosure;
 
-  const Modal = ({ children, headerText }: { children: React.ReactNode; headerText?: string }) => {
+  const Modal = ({ children, headerText, className, ...props }: ModalsProps) => {
     return (
-      <Modals headerText={headerText} {...disclosure}>
+      <Modals
+        isOpen={isOpen}
+        onClose={onClose}
+        headerText={headerText}
+        className={className}
+        {...props}
+      >
         {children}
       </Modals>
     );
