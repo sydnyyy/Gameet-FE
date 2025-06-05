@@ -45,7 +45,6 @@ export function useLoginForm() {
       return { res, saveId, email: formData.email, rememberMe };
     },
     onSuccess: ({ res, saveId, email, rememberMe }) => {
-      console.log("로그인 완료:", res);
       const token = res.headers.authorization;
       setRememberMe(rememberMe);
       setEmail(email);
