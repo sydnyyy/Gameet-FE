@@ -43,5 +43,7 @@ export default function NotificationSocket() {
     subNotification();
   }, [token]);
 
-  return null;
+  if (!token) return null;
+
+  return <></>;
 }

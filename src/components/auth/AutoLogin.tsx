@@ -8,6 +8,8 @@ export default function AutoLogin() {
 
   useEffect(() => {
     async function checkRefreshToken() {
+      const { token } = useAuthStore.getState();
+      if (!token) return;
       try {
         const res = await axiosInstance.post("/users/auth/token/refresh", { skipAuth: true });
         const newToken = res.headers.authorization;
