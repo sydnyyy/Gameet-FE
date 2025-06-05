@@ -4,8 +4,8 @@ import { HeroUIProvider } from "@heroui/react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Providers } from "./providers";
-import AutoLogin from "@/hooks/pages/main/useRefreshLogin";
 import NotificationSocket from "@/components/socket/notificationSocket";
+import AutoLogin from "@/components/auth/AutoLogin";
 
 export const metadata: Metadata = {
   title: "겜밋 | GAMEET",
