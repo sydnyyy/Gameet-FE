@@ -44,3 +44,7 @@ export const nicknameValid: RegisterOptions = {
 export const authCodeValid: RegisterOptions = {
   required: "인증번호는 필수 입력 항목입니다.",
 };
+
+export const selectValid: RegisterOptions = {
+  required: "항목을 선택해 주세요.",
+};
