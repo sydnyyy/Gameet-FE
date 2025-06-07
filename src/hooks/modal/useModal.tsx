@@ -26,5 +26,5 @@ export function useModal() {
     );
   };
 
-  return { onOpen, Modal };
+  return { onOpen, onClose, Modal };
 }
