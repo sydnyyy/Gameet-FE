@@ -5,7 +5,7 @@ import React from "react";
 interface BaseSelectProps extends Omit<HeroSelectProps, "onChange" | "children"> {
   name: string;
   rules?: RegisterOptions;
-  data: { [key: string]: string };
+  data: Record<string, string>;
   width?: string;
   height?: string;
   className?: string;
@@ -34,7 +34,7 @@ export default function BaseSelect({
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (props.selectionMode === "multiple") {
-      field.onChange(new Set(e.target.value.split(",")));
+      field.onChange(Array.from(e.target.value.split(",")));
     } else {
       field.onChange(e.target.value);
     }
