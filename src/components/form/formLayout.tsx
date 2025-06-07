@@ -18,7 +18,7 @@ export default function FormLayout<T extends FieldValues>({
     <FormProvider {...methods}>
       <form
         onSubmit={onSubmit ? methods.handleSubmit(onSubmit) : undefined}
-        className="flex flex-col gap-3 w-full max-w-md p-12 justify-center"
+        className="flex flex-col gap-3 w-full max-w-md p-10 justify-center"
       >
         {children}
       </form>

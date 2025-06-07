@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originReq._retry) {
       originReq._retry = true;
       try {
-        const res = await axios.post(
+        const res = await axiosInstance.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/token/refresh`,
           {},
         );

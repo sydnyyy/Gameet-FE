@@ -5,12 +5,12 @@ import { useEffect } from "react";
 
 export default function NotificationSocket() {
   const { token } = useAuthStore.getState();
+  if (!token) {
+    console.warn("access token 없음");
+    return;
+  }
   useEffect(() => {
     const subNotification = async () => {
-      if (!token) {
-        console.warn("access token 없음");
-        return;
-      }
       let client = getStompClient();
       try {
         if (!client || !client.active) {
@@ -43,5 +43,7 @@ export default function NotificationSocket() {
     subNotification();
   }, [token]);
 
-  return null;
+  if (!token) return null;
+
+  return <></>;
 }

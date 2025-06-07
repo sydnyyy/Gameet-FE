@@ -31,7 +31,7 @@ function useWatchNicknameChange(
   }, [methods, originalNickname, nicknameChecked, setNicknameChecked]);
 }
 
-export function useProfileForm() {
+export function useProfileForm(defaultOverrides = {}) {
   const { email, role } = useAuthStore.getState();
   const router = useRouter();
 
@@ -56,6 +56,8 @@ export function useProfileForm() {
       game_skill_level: "",
       is_voice: true,
       is_adult_match_allowed: true,
+      min_manner_score: 50,
+      ...defaultOverrides,
     },
   });
 

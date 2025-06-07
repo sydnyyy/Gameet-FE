@@ -15,6 +15,7 @@ export interface ProfileFormType {
   game_skill_level: string;
   is_adult_match_allowed: boolean;
   is_voice: boolean;
+  min_manner_score?: number;
 }
 
 export interface UserInfoFormProps {

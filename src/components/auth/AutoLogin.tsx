@@ -1,15 +1,17 @@
 "use client";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
-import axiosInstance from "@/app/api/axios";
+import { apiRequest } from "@/app/api/apiRequest";
 
 export default function AutoLogin() {
   const { setToken, clearToken } = useAuthStore();
 
   useEffect(() => {
     async function checkRefreshToken() {
+      const { rememberMe } = useAuthStore.getState();
+      if (!rememberMe) return;
       try {
-        const res = await axiosInstance.post("/users/auth/token/refresh", { skipAuth: true });
+        const res = await apiRequest("/users/auth/token/refresh", "POST", {}, { skipAuth: true });
         const newToken = res.headers.authorization;
         if (newToken) {
           setToken(newToken);
