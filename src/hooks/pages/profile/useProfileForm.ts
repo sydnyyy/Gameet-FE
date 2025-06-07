@@ -46,6 +46,7 @@ export function useProfileForm() {
     defaultValues: {
       email: email ?? "",
       nickname: "",
+      password: "",
       age: undefined,
       show_age: true,
       gender: "N",
@@ -121,9 +122,12 @@ export function useProfileForm() {
 
   // 프로필 제출 핸들러
   const handleSubmit = async (data: ProfileFormType) => {
+    const { confirm_password, password, ...rest } = data;
+    const payload = password ? { ...rest, password } : rest;
+
     try {
       const method = role === "GUEST" ? "POST" : "PUT";
-      await apiRequest(`/users/profile`, method, data);
+      await apiRequest(`/users/profile`, method, payload);
 
       alert(role === "GUEST" ? "프로필 생성이 완료되었습니다." : "프로필 수정이 완료되었습니다.");
       router.push("/");
