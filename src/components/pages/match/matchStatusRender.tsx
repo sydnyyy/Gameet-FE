@@ -2,26 +2,61 @@
 import { useMatchQueue } from "@/hooks/pages/match/useMatchStatus";
 import InMatching from "./inMatching";
 import MatchForm from "./matchForm";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useModal } from "@/hooks/modal/useModal";
 
 export default function MatchStatusRender() {
-  const { data: data, isError, error } = useMatchQueue();
+  const { token, _hasHydrated } = useAuthStore();
+  const { data, isError, error } = useMatchQueue();
+  const router = useRouter();
+  const { onOpen, Modal } = useModal();
+
+  // 비로그인 상태인 경우 로그인 페이지로 이동
+  useEffect(() => {
+    if (_hasHydrated && !token) {
+      router.replace("/login");
+      console.log(token);
+    }
+  }, [token, router, _hasHydrated]);
+
+  // 매칭 실패 시 실패 알림 모달 열기
+  useEffect(() => {
+    if (isError || data?.match_status === "FAILED") {
+      onOpen();
+    }
+  }, [isError, data?.match_status, onOpen]);
+
+  if (!_hasHydrated || !token) {
+    return null;
+  }
 
   if (isError) {
     console.error(error);
-    return <p>매칭 상태 조회 실패</p>;
+    return (
+      <>
+        <Modal headerText="💡 알림" children="매칭 에러. 다시 시도해 주세요." />
+        <MatchForm />
+      </>
+    );
   }
 
   switch (data?.match_status) {
     case "SEARCHING":
       return <InMatching />;
-    // case "MATCHED":
-    //   return <Chat />;
-    case "NONE":
+    case "CANCEL":
       return <MatchForm />;
     case "FAILED":
-      return <p>매칭에 실패했습니다.</p>;
+      return (
+        <>
+          <Modal headerText="💡 알림" children="매칭에 실패했습니다. 다시 시도해 주세요." />
+          <MatchForm />
+        </>
+      );
+    // case "MATCHED":
+    //   return <Chat />;
     default:
-      console.warn("알 수 없는 매칭 상태:", data?.match_status);
-      return null;
+      return <MatchForm />;
   }
 }
