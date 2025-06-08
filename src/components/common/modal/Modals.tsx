@@ -6,6 +6,7 @@ import {
   ModalHeader,
   ModalProps as HeroModalProps,
 } from "@heroui/react";
+import clsx from "clsx";
 
 interface ModalsProps extends Omit<HeroModalProps, "isOpen" | "onClose"> {
   children: React.ReactNode;
@@ -23,8 +24,15 @@ export default function Modals({
   className,
   ...props
 }: ModalsProps) {
+  const baseModalClassName = "bg-[#303030] py-5 px-4";
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className={className} {...props}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className={clsx(baseModalClassName, className)}
+      {...props}
+    >
       <ModalContent>
         {headerText && <ModalHeader>{headerText}</ModalHeader>}
         <ModalBody>{children}</ModalBody>
