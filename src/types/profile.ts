@@ -2,6 +2,7 @@ import { MatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProfileFormType {
+  user_id?: number;
   email: string;
   password?: string;
   confirm_password?: string;

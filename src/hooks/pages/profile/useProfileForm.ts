@@ -62,6 +62,7 @@ export function useProfileForm(defaultOverrides = {}) {
   });
 
   const codeOptions = useMatchingCodeOptions();
+  const { setUserProfileId } = useAuthStore.getState();
 
   // 기존 프로필 데이터 가져오기
   const {
@@ -72,6 +73,9 @@ export function useProfileForm(defaultOverrides = {}) {
     queryKey: ["userProfile", email],
     queryFn: async () => {
       const res = await apiRequest<ProfileFormType>(`/users/profile`, "GET");
+      if (data?.user_id) {
+        setUserProfileId(data.user_id);
+      }
       return res.data;
     },
     enabled: role !== "GUEST",
