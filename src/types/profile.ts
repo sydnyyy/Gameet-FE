@@ -1,4 +1,4 @@
-import { MatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
+import { CommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProfileFormType {
@@ -15,6 +15,7 @@ export interface ProfileFormType {
   game_skill_level: string;
   is_adult_match_allowed: boolean;
   is_voice: boolean;
+  min_manner_score?: number;
 }
 
 export interface UserInfoFormProps {
@@ -27,7 +28,7 @@ export interface UserInfoFormProps {
 
 export interface GameInfoFormProps {
   methods: UseFormReturn<ProfileFormType>;
-  codeOptions: MatchingCodeOptions | null;
+  codeOptions: CommonCodeOptions | null;
   setStep?: (step: number) => void;
-  handleSubmit: (data: ProfileFormType) => void;
+  handleSubmit?: (data: ProfileFormType) => void;
 }

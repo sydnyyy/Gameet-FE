@@ -1,6 +1,6 @@
 "use client";
 import Buttons from "@/components/common/button/Buttons";
-import BaseCheckbox from "@/components/common/checkbox/baseCheckbox";
+import BaseCheckbox from "@/components/common/checkbox/BaseCheckbox";
 import Inputs from "@/components/common/input/Inputs";
 import FormLayout from "@/components/form/formLayout";
 import { useLoginForm } from "@/hooks/pages/login/useLoginForm";
@@ -30,11 +30,7 @@ export default function LoginForm() {
       <Buttons type="submit" className="h-[48px] text-md" isDisabled={!methods.formState.isValid}>
         로그인
       </Buttons>
-      {error && (
-        <p className="mt-2 text-md text-red-500">
-          {"response" in error ? error.response?.data : "로그인에 실패했습니다."}
-        </p>
-      )}
+      {error && <p className="mt-1 text-sm text-primary-error">{error.message}</p>}
 
       <div className="flex justify-center gap-5 items-center text-primary-gray my-3">
         <Link href="/find-password">비밀번호 찾기</Link>
