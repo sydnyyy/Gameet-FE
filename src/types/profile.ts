@@ -1,4 +1,4 @@
-import { MatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
+import { CommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProfileFormType {
@@ -28,7 +28,7 @@ export interface UserInfoFormProps {
 
 export interface GameInfoFormProps {
   methods: UseFormReturn<ProfileFormType>;
-  codeOptions: MatchingCodeOptions | null;
+  codeOptions: CommonCodeOptions | null;
   setStep?: (step: number) => void;
-  handleSubmit: (data: ProfileFormType) => void;
+  handleSubmit?: (data: ProfileFormType) => void;
 }

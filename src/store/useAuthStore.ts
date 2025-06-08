@@ -11,6 +11,8 @@ interface AuthState {
   clearToken: () => void;
   rememberMe: boolean;
   setRememberMe: (value: boolean) => void;
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -23,12 +25,17 @@ export const useAuthStore = create<AuthState>()(
       setEmail: email => set({ email }),
       setRole: role => set({ role }),
       clearToken: () => set({ token: null, email: null }),
+      _hasHydrated: false,
+      setHasHydrated: state => set({ _hasHydrated: state }),
       rememberMe: false,
       setRememberMe: value => set({ rememberMe: value }),
     }),
     {
       name: "auth-storage",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => state => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );
