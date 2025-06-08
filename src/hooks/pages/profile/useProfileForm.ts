@@ -1,12 +1,13 @@
 "use client";
 import { apiRequest } from "@/app/api/apiRequest";
-import { useMatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
+import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ProfileFormType } from "@/types/profile";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 
 // 닉네임 변경 감지
 function useWatchNicknameChange(
@@ -46,6 +47,7 @@ export function useProfileForm(defaultOverrides = {}) {
     defaultValues: {
       email: email ?? "",
       nickname: "",
+      password: "",
       age: undefined,
       show_age: true,
       gender: "N",
@@ -60,7 +62,7 @@ export function useProfileForm(defaultOverrides = {}) {
     },
   });
 
-  const codeOptions = useMatchingCodeOptions();
+  const codeOptions = useCommonCodeOptions(CommonCodeGroup.MATCH_CONDITION);
 
   // 기존 프로필 데이터 가져오기
   const {
@@ -123,9 +125,12 @@ export function useProfileForm(defaultOverrides = {}) {
 
   // 프로필 제출 핸들러
   const handleSubmit = async (data: ProfileFormType) => {
+    const { confirm_password, password, ...rest } = data;
+    const payload = password ? { ...rest, password } : rest;
+
     try {
       const method = role === "GUEST" ? "POST" : "PUT";
-      await apiRequest(`/users/profile`, method, data);
+      await apiRequest(`/users/profile`, method, payload);
 
       alert(role === "GUEST" ? "프로필 생성이 완료되었습니다." : "프로필 수정이 완료되었습니다.");
       router.push("/");
