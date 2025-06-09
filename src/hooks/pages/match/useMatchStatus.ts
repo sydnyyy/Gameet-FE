@@ -1,12 +1,6 @@
 import { apiRequest } from "@/app/api/apiRequest";
-import { ProfileFormType } from "@/types/profile";
+import { MatchStatusType, StartMatchType } from "@/types/match";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-interface MatchStatusType {
-  match_status: "MATCHED" | "SEARCHING" | "NONE" | "FAILED";
-  elapsed_time: number | null;
-  match_room_id: number | null;
-}
 
 export const matchQueryKeys = {
   all: ["match"] as const,
@@ -21,13 +15,14 @@ export const useMatchQueue = () => {
       const res = await apiRequest<MatchStatusType>("match", "GET");
       return res.data;
     },
+    refetchOnWindowFocus: true,
   });
 };
 
 // 매칭 시작 Mutation
 export const useStartMatch = () => {
   const queryClient = useQueryClient();
-  return useMutation<MatchStatusType, Error, ProfileFormType>({
+  return useMutation<MatchStatusType, Error, StartMatchType>({
     mutationFn: async payload => {
       const res = await apiRequest<MatchStatusType>("match", "POST", payload);
       return res.data;

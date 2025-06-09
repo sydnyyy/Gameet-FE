@@ -16,14 +16,14 @@ export default function Sliders({ name, rules, defaultValue, ...props }: Sliders
     name,
     control,
     rules,
-    defaultValue: "",
+    defaultValue,
   });
 
   return (
     <Slider
       {...props}
       {...field}
-      value={field.value ?? ""}
+      value={field.value}
       onChange={field.onChange}
       errorMessage={error?.message}
       step={10}

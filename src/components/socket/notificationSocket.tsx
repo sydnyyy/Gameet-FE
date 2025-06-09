@@ -1,13 +1,15 @@
 "use client";
 import { connectSocket, getStompClient } from "@/app/api/socket";
+import { useMatchNotificationHandler } from "@/hooks/pages/match/useMatchNotification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect } from "react";
 
 export default function NotificationSocket() {
   const { token } = useAuthStore.getState();
+  const { handleMatchNotification } = useMatchNotificationHandler();
   if (!token) {
     console.warn("access token 없음");
-    return;
+    return null;
   }
   useEffect(() => {
     const subNotification = async () => {
@@ -27,6 +29,7 @@ export default function NotificationSocket() {
             try {
               const notificationData = JSON.parse(msg.body);
               console.log("개인 알림 수신:", notificationData);
+              handleMatchNotification(notificationData);
             } catch (e) {
               console.error("메시지 파싱 실패:", e);
             }

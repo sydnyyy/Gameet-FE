@@ -7,7 +7,7 @@ export async function apiRequest<T>(
   path: string,
   method: ApiMethod,
   body?: any,
-  config?: AxiosRequestConfig & { skipAuth?: boolean },
+  config?: AxiosRequestConfig,
 ): Promise<AxiosResponse<T>> {
   const res = await axiosInstance.request<T>({
     url: path,

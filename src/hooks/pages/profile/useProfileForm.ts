@@ -1,6 +1,7 @@
 "use client";
 import { apiRequest } from "@/app/api/apiRequest";
-import { useMatchingCodeOptions } from "@/hooks/pages/code/useMatchingCodeOptions";
+import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
+import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ProfileFormType } from "@/types/profile";
 import { useQuery } from "@tanstack/react-query";
@@ -61,8 +62,8 @@ export function useProfileForm(defaultOverrides = {}) {
     },
   });
 
-  const codeOptions = useMatchingCodeOptions();
   const { setUserProfileId } = useAuthStore.getState();
+  const codeOptions = useCommonCodeOptions(CommonCodeGroup.MATCH_CONDITION);
 
   // 기존 프로필 데이터 가져오기
   const {
