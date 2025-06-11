@@ -5,6 +5,7 @@ import { connectSocket, getStompClient } from "@/app/api/socket";
 import Buttons from "@/components/common/button/Buttons";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Input } from "@heroui/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
@@ -14,6 +15,17 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
   const { token, userProfileId } = useAuthStore();
   const bottomRef = useRef<HTMLDivElement>(null);
   const [matchParticipantId, setMatchParticipantId] = useState<number | null>(null);
+  const router = useRouter();
+
+  const handleMatchEnd = async () => {
+    try {
+      await apiRequest(`/chat/${matchRoomId}/complete`, "PATCH");
+      router.push("/");
+    } catch (err) {
+      console.error("매칭 종료 실패", err);
+      alert("매칭 종료 중 오류가 발생했습니다.");
+    }
+  };
 
   useEffect(() => {
     if (matchRoomId) {
@@ -120,7 +132,7 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
               {[
                 { label: "약속 설정", onClick: () => alert("약속 설정") },
                 { label: "신고", onClick: () => alert("신고") },
-                { label: "매칭 종료", onClick: () => alert("매칭 종료") },
+                { label: "매칭 종료", onClick: handleMatchEnd },
               ].map(({ label, onClick }) => (
                 <button
                   key={label}
