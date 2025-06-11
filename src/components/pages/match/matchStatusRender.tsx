@@ -3,23 +3,16 @@ import { useMatchQueue } from "@/hooks/pages/match/useMatchStatus";
 import InMatching from "./inMatching";
 import MatchForm from "./matchForm";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useModal } from "@/hooks/modal/useModal";
+import { useAuth } from "@/hooks/common/useAuth";
+import RequireLoginModal from "@/components/auth/RequireLoginModal";
 
 export default function MatchStatusRender() {
   const { token, _hasHydrated } = useAuthStore();
-  const { data, isError, error } = useMatchQueue();
-  const router = useRouter();
+  const { isLogin } = useAuth();
+  const { data, isError, error } = useMatchQueue(isLogin);
   const { onOpen, Modal } = useModal();
-
-  // 비로그인 상태인 경우 로그인 페이지로 이동
-  useEffect(() => {
-    if (_hasHydrated && !token) {
-      router.replace("/login");
-      console.log(token);
-    }
-  }, [token, router, _hasHydrated]);
 
   // 매칭 실패 시 실패 알림 모달 열기
   useEffect(() => {
@@ -27,6 +20,10 @@ export default function MatchStatusRender() {
       onOpen();
     }
   }, [isError, data?.match_status, onOpen]);
+
+  if (!isLogin) {
+    return <RequireLoginModal />;
+  }
 
   if (!_hasHydrated || !token) {
     return null;
