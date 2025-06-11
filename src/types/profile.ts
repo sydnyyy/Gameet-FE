@@ -3,7 +3,7 @@ import { UseFormReturn } from "react-hook-form";
 
 export interface ProfileFormType {
   user_id?: number;
-  email: string;
+  email?: string;
   password?: string;
   confirm_password?: string;
   nickname: string;

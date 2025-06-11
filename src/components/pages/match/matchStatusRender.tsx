@@ -1,11 +1,12 @@
 "use client";
+import { useModal } from "@/hooks/modal/useModal";
 import { useMatchQueue } from "@/hooks/pages/match/useMatchStatus";
-import InMatching from "./inMatching";
-import MatchForm from "./matchForm";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useModal } from "@/hooks/modal/useModal";
+import ChatRoom from "../chat/chatRoom";
+import InMatching from "./inMatching";
+import MatchForm from "./matchForm";
 
 export default function MatchStatusRender() {
   const { token, _hasHydrated } = useAuthStore();
@@ -54,8 +55,8 @@ export default function MatchStatusRender() {
           <MatchForm />
         </>
       );
-    // case "MATCHED":
-    //   return <Chat />;
+    case "MATCHED":
+      return <ChatRoom matchRoomId={data.match_room_id} />;
     default:
       return <MatchForm />;
   }

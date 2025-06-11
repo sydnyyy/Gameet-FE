@@ -3,152 +3,82 @@
 import { apiRequest } from "@/app/api/apiRequest";
 import { connectSocket, getStompClient } from "@/app/api/socket";
 import Buttons from "@/components/common/button/Buttons";
-import { useChatOpponent } from "@/hooks/pages/chat/useChatOpponent";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Input } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 
-interface ChatMessage {
-  matchParticipantId: number;
-  messageType: "TALK" | "ENTER" | "QUIT" | "APPOINTMENT";
-  content: string;
-}
-
-interface ChatPayload {
-  nickname: string;
-  matchParticipantId: number;
-  content: string;
-  messageType: string;
-  sendAt: string;
-}
-
-interface Props {
-  matchRoomId: number;
-  matchParticipantId: number;
-  nickname: string;
-  userProfileId: number;
-}
-
-interface Message {
-  nickname: string;
-  content: string;
-  matchParticipantId: number;
-  sendAt: string;
-  messageType: string;
-}
-
-export default function ChatRoom({
-  matchRoomId,
-  matchParticipantId,
-  nickname,
-  userProfileId,
-}: Props) {
+export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
   const [showOptions, setShowOptions] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatPayload[]>([]);
   const [input, setInput] = useState("");
-  const { token } = useAuthStore();
-  const clientRef = useRef<ReturnType<typeof getStompClient>>(null);
+  const { token, userProfileId } = useAuthStore();
   const bottomRef = useRef<HTMLDivElement>(null);
-
-  const { opponent, isLoading, error } = useChatOpponent({
-    roomId: matchRoomId,
-    myProfileId: userProfileId!,
-  });
+  const [matchParticipantId, setMatchParticipantId] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      const res = await apiRequest<ChatPayload[]>(
-        `/api/chat/messages?roomId=${matchRoomId}`,
-        "GET",
-      );
-      setMessages(
-        res.data.map(msg => ({
-          nickname: msg.nickname,
-          content: msg.content,
-          matchParticipantId: msg.matchParticipantId,
-          sendAt: msg.sendAt,
-          messageType: msg.messageType,
-        })),
-      );
-    };
-    fetchMessages();
+    if (matchRoomId) {
+      const fetchParticipants = async () => {
+        try {
+          const opponent = await apiRequest<number[]>(
+            `/chat/opponent/${matchRoomId}/${userProfileId!}`,
+            "GET",
+          );
+          console.log("✅ ~ 참가자 userProfileIds:", opponent.data);
+
+          const participantId = await apiRequest<number>(
+            `/chat/participantId/${matchRoomId}`,
+            "GET",
+          );
+          setMatchParticipantId(participantId.data);
+        } catch (err) {
+          console.error("참가자 정보 조회 실패:", err);
+        }
+      };
+
+      fetchParticipants();
+    }
   }, [matchRoomId]);
 
+  useEffect(() => {
+    const setupSocket = async () => {
+      const client = getStompClient() ?? (await connectSocket());
+
+      // 구독
+      client.subscribe(
+        `/topic/chat.room.${matchRoomId}`,
+        msg => {
+          const body: ChatPayload = JSON.parse(msg.body);
+          console.log("✅ ~ 받은 메시지:", body);
+          setMessages(prev => [...prev, body]);
+        },
+        { Authorization: token! },
+      );
+    };
+
+    setupSocket();
+  }, [matchRoomId, token]);
+
+  // 스크롤 자동 이동
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    const setupSocket = async () => {
-      try {
-        const client = await connectSocket();
-        clientRef.current = client;
-
-        const enterMsg: ChatMessage = {
-          matchParticipantId,
-          messageType: "ENTER",
-          content: `${nickname}님이 입장하셨습니다.`,
-        };
-        client.send(
-          "/app/chat.send",
-          { Authorization: `Bearer ${token}` },
-          JSON.stringify(enterMsg),
-        );
-
-        // 채팅 구독
-        client.subscribe(
-          `/topic/chat.room.${matchRoomId}`,
-          msg => {
-            const body: ChatPayload = JSON.parse(msg.body);
-            setMessages(prev => [...prev, body]);
-          },
-          { Authorization: token! },
-        );
-
-        client.subscribe("/user/queue/errors", msg => {
-          alert(`오류: ${JSON.parse(msg.body).message}`);
-        });
-      } catch (e) {
-        console.error("WebSocket 연결 실패:", e);
-      }
-    };
-
-    setupSocket();
-
-    return () => {
-      const client = clientRef.current;
-      if (client?.connected) {
-        const quitMsg: ChatMessage = {
-          matchParticipantId,
-          messageType: "QUIT",
-          content: `${nickname}님이 퇴장하셨습니다.`,
-        };
-        client.send(
-          "/app/chat.send",
-          { Authorization: `Bearer ${token}` },
-          JSON.stringify(quitMsg),
-        );
-      }
-    };
-  }, [matchRoomId, matchParticipantId, nickname, token]);
-
   const handleSend = () => {
-    const client = clientRef.current;
-    if (!client?.connected || !input.trim()) return;
+    const client = getStompClient();
+    if (!client || !input.trim() || matchParticipantId === null) return;
 
     const msg: ChatMessage = {
       matchParticipantId,
       messageType: "TALK",
       content: input,
     };
-
-    client.send("/app/chat.send", { Authorization: `Bearer ${token}` }, JSON.stringify(msg));
+    console.log("✅ ~ 전송 메시지:", JSON.stringify(msg));
+    client.send("/app/chat.send", { Authorization: token! }, JSON.stringify(msg));
     setInput("");
   };
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-2">{opponent?.nickname}님과의 채팅</h2>
       <div className="w-[700px] max-w-full border-2 border-black rounded-2xl h-[450px] overflow-y-auto mb-4 p-4 bg-transparent shadow-sm">
         {messages.map((msg, idx) => {
           const isMine = msg.matchParticipantId === matchParticipantId;
