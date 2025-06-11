@@ -1,11 +1,19 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function useAuth() {
   const router = useRouter();
-  const { token, clearToken } = useAuthStore();
+  const { token, clearToken, _hasHydrated } = useAuthStore();
+  const [isLogin, setIsLogin] = useState(false);
 
-  const isLogin = !!token;
+  useEffect(() => {
+    if (_hasHydrated) {
+      setIsLogin(!!token);
+    } else {
+      setIsLogin(false);
+    }
+  }, [_hasHydrated, token]);
 
   // 로그아웃
   const logout = () => {
