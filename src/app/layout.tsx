@@ -5,6 +5,7 @@ import "@/styles/common/globals.css";
 import { HeroUIProvider } from "@heroui/react";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
+import AutoLogin from "@/components/auth/AutoLogin";
 
 export const metadata: Metadata = {
   title: "겜밋 | GAMEET",
@@ -22,7 +23,7 @@ export default function RootLayout({
         <Header />
         <Providers>
           <HeroUIProvider className="flex flex-col flex-1 min-h-0 pt-[80px]">
-            {/* <AutoLogin /> */}
+            <AutoLogin />
             <NotificationSocket />
             {children}
           </HeroUIProvider>

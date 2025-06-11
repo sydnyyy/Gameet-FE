@@ -4,9 +4,11 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { apiRequest } from "@/app/api/apiRequest";
 
 export default function AutoLogin() {
-  const { setToken, clearToken } = useAuthStore();
+  const { setToken, clearToken, _hasHydrated } = useAuthStore();
 
   useEffect(() => {
+    if (!_hasHydrated) return;
+
     async function checkRefreshToken() {
       const { rememberMe } = useAuthStore.getState();
       if (!rememberMe) return;
