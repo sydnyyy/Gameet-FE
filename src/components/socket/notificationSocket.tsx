@@ -2,27 +2,46 @@
 import { connectSocket, getStompClient } from "@/app/api/socket";
 import { useMatchNotificationHandler } from "@/hooks/pages/match/useMatchNotification";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useEffect } from "react";
+import { Client, IMessage } from "@stomp/stompjs";
+import { useEffect, useRef } from "react";
 
 export default function NotificationSocket() {
   const token = useAuthStore(state => state.token);
+  const _hasHydrated = useAuthStore(state => state._hasHydrated);
   const { handleMatchNotification } = useMatchNotificationHandler();
+  const isSocketConnected = useRef(false);
+  const clientRef = useRef<Client | null>(null);
 
   useEffect(() => {
-    if (!token) return;
+    // 연결 조건 확인
+    if (!_hasHydrated || !token || isSocketConnected.current) {
+      // 소켓이 이미 연결 중인 경우 기존 연결 해제
+      if ((!_hasHydrated || !token) && clientRef.current && clientRef.current.active) {
+        clientRef.current.deactivate();
+        clientRef.current = null;
+        isSocketConnected.current = false;
+      }
+      return;
+    }
+
     const subNotification = async () => {
-      let client = getStompClient();
+      isSocketConnected.current = true;
+      let client: any = null;
       try {
         if (!client || !client.active) {
           console.log("WebSocket 연결 시도");
           client = await connectSocket();
           console.log("WebSocket 연결 완료");
+        } else {
+          client = getStompClient();
+          console.log("기존 WebSocket 연결 재사용.");
         }
-        console.log("구독 시도합니다");
+
+        clientRef.current = client;
 
         client.subscribe(
           "/user/queue/notify",
-          msg => {
+          (msg: IMessage) => {
             console.log("구독 수신");
             try {
               const notificationData = JSON.parse(msg.body);
@@ -42,9 +61,17 @@ export default function NotificationSocket() {
     };
 
     subNotification();
-  }, [token]);
+    return () => {
+      if (clientRef.current?.active) {
+        console.log("WebSocket 클린업: 연결 해제");
+        clientRef.current.deactivate();
+      }
+      clientRef.current = null;
+      isSocketConnected.current = false;
+    };
+  }, [token, _hasHydrated, handleMatchNotification]);
 
-  if (!token) return null;
+  if (!token || !_hasHydrated) return null;
 
-  return <></>;
+  return null;
 }

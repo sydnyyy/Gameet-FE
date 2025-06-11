@@ -1,7 +1,6 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { handleAxiosError } from "@/utils/handleAxiosError";
 import axios, { AxiosError } from "axios";
-import { apiRequest } from "./apiRequest";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -10,8 +9,8 @@ const axiosInstance = axios.create({
 
 // 요청 인터셉터 => accessToken 자동 추가
 axiosInstance.interceptors.request.use(config => {
-  const { token } = useAuthStore.getState();
-  if (token) {
+  const { token, _hasHydrated } = useAuthStore.getState();
+  if (_hasHydrated && token) {
     config.headers.Authorization = token;
   }
   return config;
@@ -33,11 +32,11 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originReq._retry) {
       originReq._retry = true;
       try {
-        const refreshRes = await apiRequest(
+        const refreshRes = await await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/token/refresh`,
-          "POST",
-          undefined,
-          { skipAuth: true },
+          {
+            withCredentials: true,
+          },
         );
 
         const newToken = refreshRes.headers.authorization;
