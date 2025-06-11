@@ -19,7 +19,7 @@ export default function LoadingSpinner({ initialElapsedTime = 0 }: LoadingSpinne
     intervalRef.current = setInterval(() => {
       setSeconds(prevSeconds => {
         const newSeconds = prevSeconds + 1;
-        if (newSeconds >= 60) {
+        if (newSeconds === 60) {
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
           }
