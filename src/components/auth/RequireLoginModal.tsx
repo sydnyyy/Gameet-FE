@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useAuth } from "@/hooks/common/useAuth";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useModal } from "@/hooks/modal/useModal";
 import { useRouter } from "next/navigation";
 import Buttons from "../common/button/Buttons";
@@ -25,10 +25,8 @@ export default function RequireLoginModal() {
 
   return (
     <Modal headerText="💡 알림">
-      <>
-        로그인이 필요합니다.
-        <Buttons onClick={handleGoLogin}>로그인</Buttons>
-      </>
+      로그인이 필요합니다.
+      <Buttons onClick={handleGoLogin}>로그인</Buttons>
     </Modal>
   );
 }
