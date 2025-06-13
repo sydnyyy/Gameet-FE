@@ -8,7 +8,7 @@ export const matchQueryKeys = {
 };
 
 // 매칭 상태 Query
-export const useMatchQueue = (isLoggedIn: boolean) => {
+export const useMatchQueue = () => {
   return useQuery<MatchStatusType, Error>({
     queryKey: matchQueryKeys.status(),
     queryFn: async () => {
@@ -16,7 +16,6 @@ export const useMatchQueue = (isLoggedIn: boolean) => {
       return res.data;
     },
     refetchOnWindowFocus: true,
-    enabled: isLoggedIn,
   });
 };
 
