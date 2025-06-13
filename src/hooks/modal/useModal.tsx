@@ -6,17 +6,28 @@ interface ModalsProps extends Omit<HeroModalProps, "isOpen" | "onClose"> {
   children: React.ReactNode;
   headerText?: string;
   className?: string;
+  close?: (() => void) | null | undefined;
 }
 
 export function useModal() {
   const disclosure = useDisclosure();
   const { isOpen, onOpen, onClose } = disclosure;
 
-  const Modal = ({ children, headerText, className, ...props }: ModalsProps) => {
+  const Modal = ({ children, headerText, className, close, ...props }: ModalsProps) => {
+    const handleClose = () => {
+      if (close === null) {
+        return;
+      } else if (typeof close === "function") {
+        close();
+      } else {
+        onClose();
+      }
+    };
+
     return (
       <Modals
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         headerText={headerText}
         className={className}
         {...props}
