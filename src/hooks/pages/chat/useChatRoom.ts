@@ -134,5 +134,7 @@ export function useChatRoom(matchRoomId: number | null) {
     opponentProfile,
     handleSend,
     handleMatchEnd,
+    participantId: participantInfo?.match_participant_id ?? null,
+    token,
   };
 }

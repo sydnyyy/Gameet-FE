@@ -1,24 +1,33 @@
 import Buttons from "@/components/common/button/Buttons";
 import { Input } from "@heroui/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import AppointmentFormModal from "../appointment/appointmentFormModal";
 
 interface ChatInputAreaProps {
+  matchRoomId: number;
   input: string;
   setInput: Dispatch<SetStateAction<string>>;
   showOptions: boolean;
   setShowOptions: Dispatch<SetStateAction<boolean>>;
   handleSend: () => void;
   handleMatchEnd: () => void;
+  participantId: number;
+  token: string;
 }
 
 export default function ChatInputArea({
+  matchRoomId,
   input,
   setInput,
   showOptions,
   setShowOptions,
   handleSend,
   handleMatchEnd,
+  participantId,
+  token,
 }: ChatInputAreaProps) {
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+
   return (
     <div className="w-[700px] max-w-full flex items-end gap-2 relative">
       <div className="relative flex flex-col items-center">
@@ -33,7 +42,10 @@ export default function ChatInputArea({
         {showOptions && (
           <div className="absolute bottom-full mb-2 flex flex-col z-10">
             {[
-              { label: "약속 설정", onClick: () => alert("약속 설정") },
+              {
+                label: "약속 설정",
+                onClick: () => setShowAppointmentForm(true),
+              },
               { label: "신고", onClick: () => alert("신고") },
               { label: "매칭 종료", onClick: handleMatchEnd },
             ].map(({ label, onClick }) => (
@@ -65,6 +77,14 @@ export default function ChatInputArea({
         className="flex-grow"
       />
       <Buttons onClick={handleSend}>전송</Buttons>
+      {showAppointmentForm && (
+        <AppointmentFormModal
+          matchRoomId={matchRoomId}
+          participantId={participantId}
+          token={token}
+          closeAction={() => setShowAppointmentForm(false)}
+        />
+      )}
     </div>
   );
 }
