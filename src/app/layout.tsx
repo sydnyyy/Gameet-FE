@@ -1,11 +1,8 @@
-import Footer from "@/components/layout/footer";
-import Header from "@/components/layout/header";
-import NotificationSocket from "@/components/socket/notificationSocket";
-import "@/styles/common/globals.css";
-import { HeroUIProvider } from "@heroui/react";
 import type { Metadata } from "next";
-import { Providers } from "./providers";
-import AutoLogin from "@/components/auth/AutoLogin";
+import "@/styles/globals.css";
+import { HeroUIProvider } from "@heroui/react";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 export const metadata: Metadata = {
   title: "겜밋 | GAMEET",
@@ -18,16 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="en">
       <body className="dark min-h-screen flex flex-col">
         <Header />
-        <Providers>
-          <HeroUIProvider className="flex flex-col flex-1 min-h-0 pt-[80px]">
-            <AutoLogin />
-            <NotificationSocket />
-            {children}
-          </HeroUIProvider>
-        </Providers>
+        <HeroUIProvider className="flex-1 pt-[80px]">{children}</HeroUIProvider>
         <Footer />
       </body>
     </html>

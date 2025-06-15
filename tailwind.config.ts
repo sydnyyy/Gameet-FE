@@ -36,11 +36,10 @@ const config: Config = {
 
         // 포인트 보라색
         primary: {
-          DEFAULT: "#7A41C2",
-          dark: "#8C56D3", // hover 시 어두운 보라색
+          DEFAULT: "#8C56D3",
+          dark: "#7A41C2", // hover 시 어두운 보라색
           light: "#A774E6", // hover 시 밝은 보라색
           gray: "#999090",
-          error: "#F31260", // 에러 메시지
         },
       },
       fontFamily: {
