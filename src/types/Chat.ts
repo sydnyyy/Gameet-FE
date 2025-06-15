@@ -1,10 +1,18 @@
-type ChatMessage = {
+// 참가자 정보 타입
+export interface ParticipantInfo {
+  match_participant_id: number;
+  user_profile_id: number;
+}
+
+// 채팅 메시지 타입
+export interface ChatMessage {
   matchParticipantId: number;
   messageType: "TALK" | "ENTER" | "QUIT" | "APPOINTMENT";
   content: string;
-};
+}
 
-interface ChatPayload {
+// 채팅 메시지 페이로드 타입 (서버로부터 받는 구조)
+export interface ChatPayload {
   nickname: string;
   matchParticipantId: number;
   content: string;
@@ -12,12 +20,8 @@ interface ChatPayload {
   sendAt: string;
 }
 
-interface ParticipantInfo {
-  match_participant_id: number;
-  user_profile_id: number;
-}
-
-interface OpponentProfile {
+// 상대 프로필 타입
+export interface OpponentProfile {
   nickname: string;
   game_skill_level: string;
   play_style: string;
@@ -27,6 +31,7 @@ interface OpponentProfile {
   preferred_genres: string[];
 }
 
-interface ChatRoomProps {
+// 컴포넌트 Props
+export interface ChatRoomProps {
   matchRoomId: number | null;
 }
