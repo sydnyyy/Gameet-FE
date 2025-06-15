@@ -1,9 +1,10 @@
 "use client";
+import { useModal } from "@/hooks/modal/useModal";
 import { useMatchQueue } from "@/hooks/pages/match/useMatchStatus";
 import InMatching from "./inMatching";
 import MatchForm from "./matchForm";
 import { useEffect } from "react";
-import { useModal } from "@/hooks/modal/useModal";
+import ChatRoom from "../chat/chatRoom";
 
 export default function MatchStatusRender() {
   const { data, isError, error } = useMatchQueue();
@@ -38,8 +39,8 @@ export default function MatchStatusRender() {
           <MatchForm />
         </>
       );
-    // case "MATCHED":
-    //   return <Chat />;
+    case "MATCHED":
+      return <ChatRoom matchRoomId={data.match_room_id} />;
     default:
       return <MatchForm />;
   }

@@ -1,5 +1,6 @@
 "use client";
 import { apiRequest } from "@/app/api/apiRequest";
+import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ProfileFormType } from "@/types/profile";
@@ -7,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 
 // 닉네임 변경 감지
 function useWatchNicknameChange(
@@ -62,6 +62,7 @@ export function useProfileForm(defaultOverrides = {}) {
     },
   });
 
+  const { setUserProfileId } = useAuthStore.getState();
   const codeOptions = useCommonCodeOptions(CommonCodeGroup.MATCH_CONDITION);
 
   // 기존 프로필 데이터 가져오기
@@ -73,6 +74,9 @@ export function useProfileForm(defaultOverrides = {}) {
     queryKey: ["userProfile", email],
     queryFn: async () => {
       const res = await apiRequest<ProfileFormType>(`/users/profile`, "GET");
+      if (data?.user_id) {
+        setUserProfileId(data.user_id);
+      }
       return res.data;
     },
     enabled: role !== "GUEST",
