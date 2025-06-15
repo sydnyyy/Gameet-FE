@@ -1,49 +1,74 @@
-import { Input, InputProps as HeroInputProps } from "@heroui/react";
-import { RegisterOptions, useController, useFormContext } from "react-hook-form";
-import React from "react";
+import { Input } from "@heroui/react";
 
-interface InputsProps
-  extends Omit<HeroInputProps, "onChange" | "value" | "errorMessage" | "isInvalid"> {
-  name: string;
-  rules?: RegisterOptions;
-  type?: string;
+export interface InputProps {
+  size?: "sm" | "md" | "lg";
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+  width?: string;
+  height?: string;
+  label?: React.ReactNode;
+  type: "text" | "email" | "url" | "password" | "tel" | "search" | "file";
+  description?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  errorMessage?: string;
+  readOnly?: boolean;
+  required?: boolean;
+  validate?: (value: string) => void | true | null | undefined;
+  defaultValue?: string;
+  value?: string;
+  minLength?: number;
+  maxLength?: number;
 }
 
-export default function Inputs({ name, rules, defaultValue, type, ...props }: InputsProps) {
-  // 연결된 상위 Form에서 control 객체 가져오기
-  const { control } = useFormContext();
-
-  // useController 호출 및 인자 전달 후 field 객체 생성
-  const {
-    field,
-    fieldState: { error },
-  } = useController({
-    name,
-    control,
-    rules,
-    defaultValue: "",
-  });
-
-  // numeric input의 경우 숫자만 필터링
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const filtered = type === "numeric" ? value.replace(/\D/g, "") : value;
-    field.onChange(filtered);
+export default function Inputs({
+  size = "md",
+  className,
+  onChange,
+  width,
+  height,
+  label,
+  type,
+  description,
+  placeholder,
+  disabled = false,
+  errorMessage,
+  readOnly = false,
+  required = false,
+  defaultValue,
+  value,
+  minLength,
+  maxLength,
+}: InputProps) {
+  // 기본 사이즈 틀
+  const sizeStyles = {
+    sm: { width: "200px", height: "36px" },
+    md: { width: "300px", height: "40px" },
+    lg: { width: "400px", height: "48px" },
   };
 
   return (
-    <Input
-      {...props}
-      {...field}
-      type={type}
-      value={field.value ?? ""}
-      onChange={handleChange}
-      onBlur={field.onBlur}
-      isInvalid={!!error}
-      errorMessage={error?.message}
-      classNames={{
-        errorMessage: "text-sm",
-      }}
-    />
+    <div
+      // width, height 값이 있는 경우 우선 적용
+      style={{ width: width ?? sizeStyles[size].width, height: height ?? sizeStyles[size].height }}
+      className={className}
+    >
+      <Input
+        size={size}
+        description={description}
+        label={label}
+        type={type}
+        isDisabled={disabled}
+        placeholder={placeholder}
+        errorMessage={errorMessage}
+        readOnly={readOnly}
+        isRequired={required}
+        minLength={minLength}
+        maxLength={maxLength}
+        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
+      />
+    </div>
   );
 }

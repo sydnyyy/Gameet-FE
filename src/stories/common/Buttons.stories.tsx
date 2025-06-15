@@ -1,47 +1,36 @@
-import type { Meta, StoryObj } from "@storybook/react";
 import Buttons from "@/components/common/button/Buttons";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "common/Buttons",
   component: Buttons,
-  tags: ["autodocs"],
   argTypes: {
-    children: {
-      description: "버튼 안에 표시할 텍스트 또는 요소",
-      control: "text",
-    },
-    bgColor: {
-      description: "Tailwind 배경 색상 클래스 (예: 'bg-blue-500')",
-      control: "text",
-    },
-    textColor: {
-      description: "Tailwind 텍스트 색상 클래스 (예: 'text-white')",
+    color: {
+      description: "버튼 배경색 (Tailwind 클래스 예: 'bg-blue-500')",
       control: "text",
     },
     width: {
-      description: "버튼의 너비 (예: '100px', '10rem')",
+      description: "버튼 너비 (예: '100px', '100%', '10rem')",
       control: "text",
     },
     height: {
-      description: "버튼의 높이",
+      description: "버튼 높이",
       control: "text",
     },
-    className: {
-      description: "추가 Tailwind 클래스 (예: 'rounded-xl')",
+    children: {
+      description: "버튼 안에 표시할 텍스트",
       control: "text",
     },
-    variant: {
-      description: "버튼 스타일 변형",
-      control: { type: "select" },
-      options: ["solid", "light", "flat", "ghost", "shadow", "faded", "bordered"],
+    textColor: {
+      description: "텍스트 색상 (Tailwind 클래스 예: 'text-white')",
+      control: "text",
     },
-    size: {
-      description: "버튼 크기",
-      control: { type: "select" },
-      options: ["sm", "md", "lg"],
+    changeColor: {
+      description: "2초 후 바뀔 배경색 (Tailwind 클래스)",
+      control: "text",
     },
     onClick: {
-      description: "버튼 클릭 시 호출되는 콜백 함수",
+      description: "버튼 클릭 시 실행되는 함수",
       action: "clicked",
     },
   },
@@ -53,24 +42,25 @@ type Story = StoryObj<typeof meta>;
 
 export const StoryButtons: Story = {
   render: args => {
-    const handleClick = () => {
-      args.onClick?.();
-      console.log("버튼 클릭됨");
+    const handleButtons = () => {
+      args.onClick();
+      console.log("1234");
     };
 
     return (
-      <div className="w-full h-[300px] flex justify-center items-center">
-        <Buttons {...args} onClick={handleClick} />
+      <div className="w-full h-[500px] flex-center">
+        <Buttons {...args} onClick={handleButtons} />
       </div>
     );
   },
   args: {
+    color: "bg-red-500",
+    width: "100px",
+    height: "100px",
     children: "버튼",
-    bgColor: "bg-blue-500",
-    textColor: "text-white",
-    width: "120px",
-    height: "48px",
-    variant: "solid",
-    size: "md",
+    textColor: "text-blue",
+    changeColor: "bg-purple-500",
+    type: "button",
+    onClick: () => console.log("기본 클릭"),
   },
 };

@@ -1,27 +1,31 @@
 "use client";
-import { Button, ButtonProps } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { useState } from "react";
 
-export interface ButtonsProps extends Omit<ButtonProps, "onPress"> {
-  className?: string;
-  bgColor?: string;
-  width?: string;
-  height?: string;
+export interface ButtonProps {
+  children: React.ReactNode;
+  color: string;
+  width: string;
+  height: string;
+  changeColor?: string;
   textColor?: string;
-  onClick?: () => void;
+  onClick: () => void;
+  isLoading?: boolean;
+  type: "submit" | "button";
 }
 
 export default function Buttons({
   children,
-  onClick,
-  bgColor = "bg-primary",
-  textColor = "text-white",
+  color,
   width,
   height,
-  className,
-  ...props
-}: ButtonsProps) {
-  const handleClick = () => {
+  onClick,
+  type = "button",
+  textColor = "text-white",
+}: ButtonProps) {
+  const bgColor = `bg-${color}-500`;
+
+  const handleButton = () => {
     if (onClick) {
       onClick();
     }
@@ -29,13 +33,12 @@ export default function Buttons({
 
   return (
     <Button
-      {...props}
       disableRipple
-      className={`${bgColor} ${textColor} ${className} font-semibold`}
+      className={`${bgColor} ${textColor}`}
       style={{ width, height }}
-      onPress={handleClick}
-    >
-      {children}
-    </Button>
+      onPress={handleButton}
+      children={<>{children}</>}
+      type={type}
+    />
   );
 }
