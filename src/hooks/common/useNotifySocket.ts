@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Client, IMessage } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";
 
-export default function NotificationSocket() {
+export default function useNotifySocket() {
   const token = useAuthStore(state => state.token);
   const _hasHydrated = useAuthStore(state => state._hasHydrated);
   const { handleMatchNotification } = useMatchNotificationHandler();
@@ -72,6 +72,4 @@ export default function NotificationSocket() {
   }, [token, _hasHydrated, handleMatchNotification]);
 
   if (!token || !_hasHydrated) return null;
-
-  return null;
 }

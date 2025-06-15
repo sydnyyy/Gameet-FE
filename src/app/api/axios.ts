@@ -34,6 +34,7 @@ axiosInstance.interceptors.response.use(
       try {
         const refreshRes = await await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/token/refresh`,
+          {},
           {
             withCredentials: true,
           },
@@ -55,9 +56,6 @@ axiosInstance.interceptors.response.use(
       } catch (reissueError) {
         // 재발급 실패 시 토큰 초기화
         clearToken();
-        if (typeof window !== "undefined") {
-          window.location.href = "/";
-        }
         return Promise.reject(handleAxiosError(reissueError as AxiosError));
       }
     }
