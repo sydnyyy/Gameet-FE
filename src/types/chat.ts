@@ -34,4 +34,5 @@ export interface OpponentProfile {
 // 컴포넌트 Props
 export interface ChatRoomProps {
   matchRoomId: number | null;
+  matchStatus: string | null;
 }

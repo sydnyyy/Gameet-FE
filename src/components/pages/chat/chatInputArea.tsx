@@ -13,6 +13,7 @@ interface ChatInputAreaProps {
   handleMatchEnd: () => void;
   participantId: number;
   token: string;
+  handleReportModalOpen: () => void;
 }
 
 export default function ChatInputArea({
@@ -25,6 +26,7 @@ export default function ChatInputArea({
   handleMatchEnd,
   participantId,
   token,
+  handleReportModalOpen,
 }: ChatInputAreaProps) {
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
 

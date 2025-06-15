@@ -5,7 +5,7 @@ import { ChatRoomProps } from "@/types/chat";
 import ChatInputArea from "./chatInputArea";
 import ChatMessages from "./chatMessages";
 
-export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
+export default function ChatRoom({ matchRoomId, matchStatus }: ChatRoomProps) {
   const {
     messages,
     input,

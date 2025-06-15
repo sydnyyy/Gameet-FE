@@ -1,7 +1,7 @@
 import { ProfileFormType } from "./profile";
 
 export interface MatchStatusType {
-  match_status: "SEARCHING" | "CANCEL" | "NONE" | "MATCHED" | "FAILED";
+  match_status: "SEARCHING" | "CANCEL" | "NONE" | "MATCHED" | "FAILED" | "COMPLETED";
   elapsed_time: number | null;
   match_room_id: number | null;
 }

@@ -16,7 +16,7 @@ export function useReportForm({
   matchRoomId,
 }: {
   closeAction: () => void;
-  matchRoomId: number;
+  matchRoomId: number | null;
 }) {
   const methods = useForm<ReportFormData>({
     mode: "onSubmit",

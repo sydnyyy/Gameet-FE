@@ -16,7 +16,7 @@ export function useMannerEvaluationForm({
   matchRoomId,
 }: {
   closeAction: () => void;
-  matchRoomId: number;
+  matchRoomId: number | null;
 }) {
   const methods = useForm<MannerEvaluationFormData>({
     mode: "onSubmit",
