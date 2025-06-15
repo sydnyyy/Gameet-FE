@@ -34,6 +34,7 @@ axiosInstance.interceptors.response.use(
       try {
         const refreshRes = await await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/token/refresh`,
+          {},
           {
             withCredentials: true,
           },

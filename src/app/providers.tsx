@@ -10,8 +10,8 @@ export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
 
   function NotifySocketAndAutoLogin() {
-    useNotifySocket();
     useAutoLogin();
+    useNotifySocket();
     return null;
   }
 
