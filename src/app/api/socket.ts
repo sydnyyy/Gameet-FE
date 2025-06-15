@@ -1,9 +1,9 @@
 import { useAuthStore } from "@/store/useAuthStore";
-import { Client } from "@stomp/stompjs";
-import { apiRequest } from "./apiRequest";
+import { CompatClient, Frame, Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import { apiRequest } from "./apiRequest";
 
-let stompClient: Client | null = null;
+let stompClient: CompatClient | null = null;
 // websocket Token 발급 여부
 let hasWsToken = false;
 
@@ -13,7 +13,7 @@ async function getWsToken(): Promise<boolean> {
   if (!token) {
     return false;
   }
-  if (hasWsToken && stompClient && stompClient.active) {
+  if (hasWsToken && stompClient && stompClient.connected) {
     return true;
   }
   try {
@@ -29,9 +29,9 @@ async function getWsToken(): Promise<boolean> {
 }
 
 // webSocket 연결
-export const connectSocket = async (): Promise<Client> => {
+export const connectSocket = async (): Promise<CompatClient> => {
   const { token } = useAuthStore.getState();
-  if (stompClient && stompClient.active) {
+  if (stompClient && stompClient.connected) {
     return stompClient;
   }
   const isWsToken = await getWsToken();
@@ -39,37 +39,38 @@ export const connectSocket = async (): Promise<Client> => {
     throw new Error("웹소켓 토큰 발급 실패");
   }
 
-  return new Promise<Client>(resolve => {
-    stompClient = new Client({
-      webSocketFactory: () => new SockJS("http://localhost:8080/ws") as WebSocket,
-      reconnectDelay: 5000,
-      connectHeaders: {
-        Authorization: token || "",
-      },
-
-      onConnect: () => {
+  return new Promise<CompatClient>((resolve, reject) => {
+    stompClient = Stomp.over(() => new SockJS("http://localhost:8080/ws"));
+    stompClient.connect(
+      { Authorization: token || "" },
+      () => {
         console.log("웹소켓 연결 성공");
-        resolve(stompClient as Client);
+        resolve(stompClient!);
       },
-      onStompError: frame => {
-        console.log("웹소켓 연결 실패:", frame);
+      (error: Frame) => {
+        console.log("웹소켓 연결 실패:", error);
+        stompClient = null;
+        reject(new Error("웹소켓 연결 실패"));
       },
-    });
-
-    stompClient.activate();
+    );
   });
 };
 
 // webSocket 연결 해제
 export const disconnectSocket = () => {
-  if (stompClient && stompClient.active) {
-    stompClient.deactivate();
+  if (stompClient && stompClient.connected) {
+    stompClient.disconnect(() => {
+      console.log("웹소켓 연결 해제");
+    });
     stompClient = null;
     hasWsToken = false;
-    console.log("웹소켓 연결 해제");
   }
 };
 
-export const getStompClient = (): Client | null => {
-  return stompClient;
+// stompClient 반환
+export const getStompClient = (): CompatClient | null => {
+  if (stompClient?.connected) {
+    return stompClient;
+  }
+  return null;
 };

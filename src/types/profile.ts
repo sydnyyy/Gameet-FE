@@ -2,7 +2,8 @@ import { CommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProfileFormType {
-  email: string;
+  user_id?: number;
+  email?: string;
   password?: string;
   confirm_password?: string;
   nickname: string;
