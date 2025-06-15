@@ -1,0 +1,11 @@
+export const CommonCodeGroup = {
+  MATCH_CONDITION: "MATCH_CONDITION",
+  GAME_PLATFORM: "GAME_PLATFORM",
+  PREFERRED_GENRE: "PREFERRED_GENRE",
+  PLAY_STYLE: "PLAY_STYLE",
+  GAME_SKILL_LEVEL: "GAME_SKILL_LEVEL",
+  REPORT_REASON: "REPORT_REASON",
+  MANNER_EVALUATION: "MANNER_EVALUATION"
+} as const;
+
+export type CommonCodeGroup = (typeof CommonCodeGroup)[keyof typeof CommonCodeGroup];
