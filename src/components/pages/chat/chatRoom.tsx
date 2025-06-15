@@ -8,63 +8,76 @@ import { Input } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+type ParticipantInfo = {
+  match_participant_id: number;
+  user_profile_id: number;
+};
+
 export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
-  const [showOptions, setShowOptions] = useState(false);
-  const [messages, setMessages] = useState<ChatPayload[]>([]);
-  const [input, setInput] = useState("");
   const { token, userProfileId } = useAuthStore();
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [matchParticipantId, setMatchParticipantId] = useState<number | null>(null);
-  const router = useRouter();
   const subscriptionRef = useRef<any>(null);
+  const hasSentEnterMessageRef = useRef(false);
+  const router = useRouter();
 
-  const handleMatchEnd = async () => {
-    try {
-      await apiRequest(`/chat/${matchRoomId}/complete`, "PATCH");
-      router.push("/");
-    } catch (err) {
-      console.error("매칭 종료 실패", err);
-      alert("매칭 종료 중 오류가 발생했습니다.");
-    }
-  };
+  const [participantInfo, setParticipantInfo] = useState<ParticipantInfo | null>(null);
+  const [opponentProfile, setOpponentProfile] = useState<OpponentProfile | null>(null);
+  const [messages, setMessages] = useState<ChatPayload[]>([]);
+  const [input, setInput] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
 
+  // 참가자 정보 조회 및 입장 메시지 전송
   useEffect(() => {
-    if (matchRoomId) {
-      const fetchParticipants = async () => {
-        try {
-          const opponent = await apiRequest<number[]>(`/users/profile/${userProfileId!}`, "GET");
-          console.log("✅ ~ 참가자 userProfileIds:", opponent.data);
+    if (!matchRoomId || hasSentEnterMessageRef.current) return;
 
-          const participantId = await apiRequest<number>(
-            `/chat/participantId/${matchRoomId}`,
-            "GET",
-          );
-          setMatchParticipantId(participantId.data);
-        } catch (err) {
-          console.error("참가자 정보 조회 실패:", err);
+    const fetchInfo = async () => {
+      try {
+        const participant = await apiRequest<ParticipantInfo>(
+          `/chat/participantId/${matchRoomId}`,
+          "GET",
+        );
+        setParticipantInfo(participant.data);
+
+        const opponentRes = await apiRequest<OpponentProfile>(
+          `/users/profile/${participant.data.user_profile_id}`,
+          "GET",
+        );
+        setOpponentProfile(opponentRes.data);
+
+        const client = getStompClient() ?? (await connectSocket());
+
+        if (!hasSentEnterMessageRef.current) {
+          const entryMsg: ChatMessage = {
+            matchParticipantId: participant.data.match_participant_id,
+            messageType: "ENTER",
+            content: `${opponentRes.data.nickname ?? "상대방"}님이 입장하셨습니다.`,
+          };
+          client.send("/app/chat.send", { Authorization: token! }, JSON.stringify(entryMsg));
+          hasSentEnterMessageRef.current = true;
         }
-      };
+      } catch (err) {
+        console.error("참가자 정보 조회 실패:", err);
+      }
+    };
 
-      fetchParticipants();
-    }
+    fetchInfo();
   }, [matchRoomId]);
 
+  // 메시지 구독
   useEffect(() => {
+    if (!matchRoomId) return;
+
     const setupSocket = async () => {
       const client = getStompClient() ?? (await connectSocket());
 
-      // 이전 구독이 있으면 해제
       if (subscriptionRef.current) {
         subscriptionRef.current.unsubscribe();
-        console.log("이전 구독 해제");
       }
 
-      // 새 구독
       subscriptionRef.current = client.subscribe(
         `/topic/chat.room.${matchRoomId}`,
         msg => {
           const body: ChatPayload = JSON.parse(msg.body);
-          console.log("✅ ~ 받은 메시지:", body);
           setMessages(prev => [...prev, body]);
         },
         { Authorization: token! },
@@ -77,28 +90,36 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
       if (subscriptionRef.current) {
         subscriptionRef.current.unsubscribe();
         subscriptionRef.current = null;
-        console.log("cleanup 시 구독 해제");
       }
     };
   }, [matchRoomId, token]);
 
-  // 스크롤 자동 이동
+  // 스크롤 이동
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = () => {
     const client = getStompClient();
-    if (!client || !input.trim() || matchParticipantId === null) return;
+    if (!client || !input.trim() || !participantInfo) return;
 
     const msg: ChatMessage = {
-      matchParticipantId,
+      matchParticipantId: participantInfo.match_participant_id,
       messageType: "TALK",
       content: input,
     };
-    console.log("✅ ~ 전송 메시지:", JSON.stringify(msg));
     client.send("/app/chat.send", { Authorization: token! }, JSON.stringify(msg));
     setInput("");
+  };
+
+  const handleMatchEnd = async () => {
+    try {
+      await apiRequest(`/chat/${matchRoomId}/complete`, "PATCH");
+      router.push("/");
+    } catch (err) {
+      console.error("매칭 종료 실패:", err);
+      alert("매칭 종료 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -108,10 +129,25 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
         style={{ backgroundColor: "#403a45", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)" }}
       >
         {messages.map((msg, idx) => {
-          if (matchParticipantId === null) return null;
+          const myId = participantInfo?.match_participant_id;
+          if (!myId) return null;
 
-          const isMine = msg.matchParticipantId === matchParticipantId;
+          const isMine = msg.matchParticipantId === myId;
           const time = msg.sendAt ? new Date(msg.sendAt).toLocaleTimeString() : "";
+
+          if ((msg.messageType === "ENTER" || msg.messageType === "QUIT") && isMine) {
+            return null;
+          }
+
+          if (msg.messageType === "ENTER" || msg.messageType === "QUIT") {
+            return (
+              <div key={idx} className="w-full flex justify-center my-2">
+                <span className="text-xs text-gray-400 bg-[#2a2a2a] px-3 py-1 rounded-full">
+                  {msg.content}
+                </span>
+              </div>
+            );
+          }
 
           return (
             <div
@@ -121,11 +157,9 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
               {isMine && time && <span className="text-xs text-gray-400 mb-0.5">{time}</span>}
               <div
                 className={`max-w-[60%] p-3 rounded-lg text-sm break-words relative ${
-                  msg.messageType !== "TALK"
-                    ? "text-gray-400 text-center"
-                    : isMine
-                      ? "bg-primary text-white rounded-br-none"
-                      : "bg-[#2e2e2e] text-primary rounded-bl-none"
+                  isMine
+                    ? "bg-primary text-white rounded-br-none"
+                    : "bg-[#2e2e2e] text-primary rounded-bl-none"
                 }`}
               >
                 {msg.content}
