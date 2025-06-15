@@ -56,7 +56,8 @@ export default function MatchStatusRender() {
         </>
       );
     case "MATCHED":
-      return <ChatRoom matchRoomId={data.match_room_id} />;
+    case "COMPLETED":
+      return <ChatRoom matchRoomId={data?.match_room_id} matchStatus={data?.match_status} />;
     default:
       return <MatchForm />;
   }

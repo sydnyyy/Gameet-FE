@@ -1,11 +1,12 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/app/api/apiRequest";
 import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 import { useConfirm } from "@/hooks/confirm/useConfirm";
+import { matchQueryKeys } from "@/hooks/pages/match/useMatchStatus";
 
 export interface MannerEvaluationFormData {
   manner_evaluation: string;
@@ -16,7 +17,7 @@ export function useMannerEvaluationForm({
   matchRoomId,
 }: {
   closeAction: () => void;
-  matchRoomId: number;
+  matchRoomId: number | null;
 }) {
   const methods = useForm<MannerEvaluationFormData>({
     mode: "onSubmit",
@@ -30,6 +31,8 @@ export function useMannerEvaluationForm({
 
   const { ConfirmModal, confirm } = useConfirm();
 
+  const queryClient = useQueryClient();
+
   const mannerEvaluationMutation = useMutation({
     mutationFn: async (formData: MannerEvaluationFormData) => {
       const { manner_evaluation } = formData;
@@ -42,6 +45,7 @@ export function useMannerEvaluationForm({
       alert("매너 평가 완료");
       console.log("매너 평가 성공");
       closeAction();
+      queryClient.invalidateQueries({ queryKey: matchQueryKeys.status() });
     },
     onError: (error: any) => {
       console.error("매너 평가 실패:", error);
