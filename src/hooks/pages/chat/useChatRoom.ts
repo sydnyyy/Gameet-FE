@@ -19,6 +19,21 @@ export function useChatRoom(matchRoomId: number | null) {
   const hasSentEnterMessageRef = useRef(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!matchRoomId) return;
+
+    const fetchMessages = async () => {
+      try {
+        const res = await apiRequest<ChatPayload[]>(`/chat/${matchRoomId}/messages`, "GET");
+        setMessages(res.data);
+      } catch (err) {
+        console.error("이전 채팅 불러오기 실패:", err);
+      }
+    };
+
+    fetchMessages();
+  }, [matchRoomId]);
+
   // 상대 정보 불러오기 + 입장 메시지 전송
   useEffect(() => {
     if (!matchRoomId || hasSentEnterMessageRef.current) return;
