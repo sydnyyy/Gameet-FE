@@ -34,6 +34,10 @@ export default function BaseSelect({
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (props.selectionMode === "multiple") {
+      if (e.target.value === "") {
+        field.onChange([]);
+        return;
+      }
       field.onChange(Array.from(e.target.value.split(",")));
     } else {
       field.onChange(e.target.value);
