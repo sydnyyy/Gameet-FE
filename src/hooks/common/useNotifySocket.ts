@@ -1,6 +1,6 @@
 "use client";
 import { connectSocket, getStompClient } from "@/app/api/socket";
-import { useMatchNotificationHandler } from "@/hooks/pages/match/useMatchNotification";
+import { useMatchNotification } from "@/hooks/pages/match/useMatchNotification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Client, IMessage } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";
@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
 export default function useNotifySocket() {
   const token = useAuthStore(state => state.token);
   const _hasHydrated = useAuthStore(state => state._hasHydrated);
-  const { handleMatchNotification } = useMatchNotificationHandler();
+  const { handleMatchNotification } = useMatchNotification();
   const isSocketConnected = useRef(false);
   const clientRef = useRef<Client | null>(null);
 
