@@ -114,7 +114,11 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
           const time = msg.sendAt ? new Date(msg.sendAt).toLocaleTimeString() : "";
 
           return (
-            <div key={idx} className={`mb-2 flex ${isMine ? "justify-end" : "justify-start"}`}>
+            <div
+              key={idx}
+              className={`mb-2 flex ${isMine ? "justify-end" : "justify-start"} items-end gap-1`}
+            >
+              {isMine && time && <span className="text-xs text-gray-400 mb-0.5">{time}</span>}
               <div
                 className={`max-w-[60%] p-3 rounded-lg text-sm break-words relative ${
                   msg.messageType !== "TALK"
@@ -125,13 +129,12 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
                 }`}
               >
                 {msg.content}
-                {msg.messageType === "TALK" && time && (
-                  <div className="text-xs text-gray-300 text-right mt-1">{time}</div>
-                )}
               </div>
+              {!isMine && time && <span className="text-xs text-gray-400 mb-0.5">{time}</span>}
             </div>
           );
         })}
+
         <div ref={bottomRef} />
       </div>
 
