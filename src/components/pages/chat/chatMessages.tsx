@@ -22,7 +22,11 @@ export default function ChatMessages({ messages, participantInfo, bottomRef }: C
 
         if ((msg.messageType === "ENTER" || msg.messageType === "QUIT") && isMine) return null;
 
-        if (msg.messageType === "ENTER" || msg.messageType === "QUIT") {
+        if (
+          msg.messageType === "ENTER" ||
+          msg.messageType === "QUIT" ||
+          msg.messageType === "APPOINTMENT"
+        ) {
           return (
             <div key={idx} className="w-full flex justify-center my-2">
               <span className="text-xs text-gray-400 bg-[#2a2a2a] px-3 py-1 rounded-full">
