@@ -31,10 +31,7 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
     if (matchRoomId) {
       const fetchParticipants = async () => {
         try {
-          const opponent = await apiRequest<number[]>(
-            `/chat/opponent/${matchRoomId}/${userProfileId!}`,
-            "GET",
-          );
+          const opponent = await apiRequest<number[]>(`/users/profile/${userProfileId!}`, "GET");
           console.log("✅ ~ 참가자 userProfileIds:", opponent.data);
 
           const participantId = await apiRequest<number>(
@@ -52,11 +49,12 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
   }, [matchRoomId]);
 
   useEffect(() => {
+    let subscription: any;
+
     const setupSocket = async () => {
       const client = getStompClient() ?? (await connectSocket());
 
-      // 구독
-      client.subscribe(
+      subscription = client.subscribe(
         `/topic/chat.room.${matchRoomId}`,
         msg => {
           const body: ChatPayload = JSON.parse(msg.body);
@@ -68,6 +66,14 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
     };
 
     setupSocket();
+
+    return () => {
+      // cleanup: 이전 구독 해제
+      if (subscription) {
+        subscription.unsubscribe();
+        console.log("🧹 이전 소켓 구독 해제됨");
+      }
+    };
   }, [matchRoomId, token]);
 
   // 스크롤 자동 이동
@@ -91,10 +97,15 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
 
   return (
     <div className="p-4">
-      <div className="w-[700px] max-w-full border-2 border-black rounded-2xl h-[450px] overflow-y-auto mb-4 p-4 bg-transparent shadow-sm">
+      <div
+        className="w-[700px] max-w-full rounded-2xl h-[450px] overflow-y-auto mb-4 p-4"
+        style={{ backgroundColor: "#403a45", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)" }}
+      >
         {messages.map((msg, idx) => {
+          if (matchParticipantId === null) return null;
+
           const isMine = msg.matchParticipantId === matchParticipantId;
-          const time = new Date(msg.sendAt).toLocaleTimeString();
+          const time = msg.sendAt ? new Date(msg.sendAt).toLocaleTimeString() : "";
 
           return (
             <div key={idx} className={`mb-2 flex ${isMine ? "justify-end" : "justify-start"}`}>
@@ -108,7 +119,7 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
                 }`}
               >
                 {msg.content}
-                {msg.messageType === "TALK" && (
+                {msg.messageType === "TALK" && time && (
                   <div className="text-xs text-gray-300 text-right mt-1">{time}</div>
                 )}
               </div>
@@ -122,8 +133,12 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
         <div className="relative flex flex-col items-center">
           <button
             onClick={() => setShowOptions(prev => !prev)}
-            className="w-10 h-10 flex items-center justify-center border-2 border-black rounded-md text-xl font-bold select-none text-black"
             type="button"
+            className="w-10 h-10 flex items-center justify-center rounded-md text-xl font-bold select-none text-white"
+            style={{
+              backgroundColor: "#403a45",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+            }}
           >
             +
           </button>
