@@ -16,6 +16,7 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [matchParticipantId, setMatchParticipantId] = useState<number | null>(null);
   const router = useRouter();
+  const subscriptionRef = useRef<any>(null);
 
   const handleMatchEnd = async () => {
     try {
@@ -49,12 +50,17 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
   }, [matchRoomId]);
 
   useEffect(() => {
-    let subscription: any;
-
     const setupSocket = async () => {
       const client = getStompClient() ?? (await connectSocket());
 
-      subscription = client.subscribe(
+      // 이전 구독이 있으면 해제
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        console.log("이전 구독 해제");
+      }
+
+      // 새 구독
+      subscriptionRef.current = client.subscribe(
         `/topic/chat.room.${matchRoomId}`,
         msg => {
           const body: ChatPayload = JSON.parse(msg.body);
@@ -68,10 +74,10 @@ export default function ChatRoom({ matchRoomId }: ChatRoomProps) {
     setupSocket();
 
     return () => {
-      // cleanup: 이전 구독 해제
-      if (subscription) {
-        subscription.unsubscribe();
-        console.log("🧹 이전 소켓 구독 해제됨");
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        subscriptionRef.current = null;
+        console.log("cleanup 시 구독 해제");
       }
     };
   }, [matchRoomId, token]);
