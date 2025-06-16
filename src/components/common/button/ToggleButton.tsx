@@ -1,12 +1,12 @@
 "use client";
 
+import clsx from "clsx";
 import { ReactNode } from "react";
 import Buttons from "./Buttons";
-import clsx from "clsx";
 
 interface ToggleButtonProps {
   isActive: boolean;
-  onClick: () => void;
+  onClick?: () => void;
   children: ReactNode;
 }
 
