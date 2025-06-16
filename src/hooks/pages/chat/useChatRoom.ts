@@ -1,9 +1,13 @@
 import { apiRequest } from "@/app/api/apiRequest";
 import { connectSocket, getStompClient } from "@/app/api/socket";
+import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
+import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ChatMessage, ChatPayload, OpponentProfile, ParticipantInfo } from "@/types/chat";
+import { ProfileFormType } from "@/types/profile";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 export function useChatRoom(matchRoomId: number | null) {
   const { token } = useAuthStore();
@@ -19,6 +23,26 @@ export function useChatRoom(matchRoomId: number | null) {
   const hasSentEnterMessageRef = useRef(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // ✅ RHF setup for readOnly GameInfoFields
+  const methods = useForm<ProfileFormType>({
+    defaultValues: {
+      nickname: "",
+      age: undefined,
+      show_age: true,
+      gender: "N",
+      game_platforms: [],
+      preferred_genres: [],
+      play_style: "",
+      game_skill_level: "",
+      is_voice: true,
+      is_adult_match_allowed: true,
+      min_manner_score: 50,
+    },
+  });
+
+  const codeOptions = useCommonCodeOptions(CommonCodeGroup.MATCH_CONDITION);
+
+  // ✅ 메시지 목록 불러오기
   useEffect(() => {
     if (!matchRoomId) return;
 
@@ -34,7 +58,7 @@ export function useChatRoom(matchRoomId: number | null) {
     fetchMessages();
   }, [matchRoomId]);
 
-  // 상대 정보 불러오기 + 입장 메시지 전송
+  // ✅ 참가자 정보 및 상대 프로필 + 입장 메시지
   useEffect(() => {
     if (!matchRoomId || hasSentEnterMessageRef.current) return;
 
@@ -52,9 +76,12 @@ export function useChatRoom(matchRoomId: number | null) {
         );
         setOpponentProfile(opponent);
 
+        // RHF 폼에 데이터 주입
+        methods.reset(opponent);
+
         const client = getStompClient() ?? (await connectSocket());
 
-        // 입장 메시지 전송 (본인 화면에는 표시되지 않도록 메시지 구독 전 전송)
+        // 입장 메시지 전송
         if (!hasSentEnterMessageRef.current) {
           const entryMessage: ChatMessage = {
             matchParticipantId: participant.match_participant_id,
@@ -73,7 +100,7 @@ export function useChatRoom(matchRoomId: number | null) {
     fetchParticipantInfo();
   }, [matchRoomId]);
 
-  // 메시지 구독
+  // ✅ 메시지 구독
   useEffect(() => {
     if (!matchRoomId) return;
 
@@ -85,7 +112,7 @@ export function useChatRoom(matchRoomId: number | null) {
         subscriptionRef.current.unsubscribe();
       }
 
-      // 새 구독 생성
+      // 새 구독
       subscriptionRef.current = client.subscribe(
         `/topic/chat.room.${matchRoomId}`,
         message => {
@@ -99,7 +126,7 @@ export function useChatRoom(matchRoomId: number | null) {
     subscribeToMessages();
 
     return () => {
-      // 컴포넌트 unmount 시 구독 해제
+      // cleanup
       if (subscriptionRef.current) {
         subscriptionRef.current.unsubscribe();
         subscriptionRef.current = null;
@@ -107,12 +134,12 @@ export function useChatRoom(matchRoomId: number | null) {
     };
   }, [matchRoomId, token]);
 
-  // 메시지 수신 시 스크롤 맨 아래로 이동
+  // ✅ 메시지 도착 시 스크롤 아래로
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 메시지 전송 핸들러
+  // ✅ 메시지 전송
   const handleSend = () => {
     const client = getStompClient();
     if (!client || !input.trim() || !participantInfo) return;
@@ -127,7 +154,7 @@ export function useChatRoom(matchRoomId: number | null) {
     setInput("");
   };
 
-  // 매칭 종료 핸들러
+  // ✅ 매칭 종료
   const handleMatchEnd = async () => {
     try {
       await apiRequest(`/chat/${matchRoomId}/complete`, "PATCH");
@@ -151,5 +178,7 @@ export function useChatRoom(matchRoomId: number | null) {
     handleMatchEnd,
     participantId: participantInfo?.match_participant_id ?? null,
     token,
+    methods, // ✅ readOnly용 RHF methods
+    codeOptions, // ✅ 공통 코드 옵션
   };
 }

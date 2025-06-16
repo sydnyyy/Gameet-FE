@@ -1,16 +1,26 @@
 import { ChatPayload, ParticipantInfo } from "@/types/chat";
+import { ProfileFormType } from "@/types/profile";
 import { RefObject } from "react";
+import { UseFormReturn } from "react-hook-form";
 
 interface ChatMessagesProps {
   messages: ChatPayload[];
   participantInfo: ParticipantInfo | null;
   bottomRef: RefObject<HTMLDivElement | null>;
+  methods: UseFormReturn<ProfileFormType>;
+  codeOptions: any;
+  setShowProfileModal: (show: boolean) => void;
 }
 
-export default function ChatMessages({ messages, participantInfo, bottomRef }: ChatMessagesProps) {
+export default function ChatMessages({
+  messages,
+  participantInfo,
+  bottomRef,
+  setShowProfileModal,
+}: ChatMessagesProps) {
   return (
     <div
-      className="w-[700px] max-w-full rounded-2xl h-[450px] overflow-y-auto mb-4 p-4"
+      className="w-[700px] max-w-full rounded-2xl h-[600px] overflow-y-auto mb-4 p-4"
       style={{ backgroundColor: "#403a45", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)" }}
     >
       {messages.map((msg, idx) => {
@@ -41,6 +51,18 @@ export default function ChatMessages({ messages, participantInfo, bottomRef }: C
             key={idx}
             className={`mb-2 flex ${isMine ? "justify-end" : "justify-start"} items-end gap-1`}
           >
+            {!isMine && (
+              <div
+                className="w-8 h-8 rounded-full overflow-hidden mr-2 cursor-pointer"
+                onClick={() => setShowProfileModal(true)}
+              >
+                <img
+                  src="/images/games/profile.jpg"
+                  alt="상대방 프로필"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             {isMine && time && <span className="text-xs text-gray-400 mb-0.5">{time}</span>}
             <div
               className={`max-w-[60%] p-3 rounded-lg text-sm break-words relative ${
@@ -55,7 +77,6 @@ export default function ChatMessages({ messages, participantInfo, bottomRef }: C
           </div>
         );
       })}
-
       <div ref={bottomRef} />
     </div>
   );
