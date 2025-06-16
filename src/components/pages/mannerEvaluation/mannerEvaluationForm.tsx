@@ -11,7 +11,7 @@ export default function MannerEvaluationForm({
   matchRoomId,
 }: {
   closeAction: () => void;
-  matchRoomId: number;
+  matchRoomId: number | null;
 }) {
   const { methods, onSubmit, mannerEvaluationError, codeOptions, ConfirmModal } =
     useMannerEvaluationForm({

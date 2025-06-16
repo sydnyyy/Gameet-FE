@@ -3,11 +3,13 @@ import { useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { apiRequest } from "@/app/api/apiRequest";
 
-export default function AutoLogin() {
-  const { setToken, clearToken, _hasHydrated } = useAuthStore();
+export default function useAutoLogin() {
+  const { setToken, clearToken, _hasHydrated, rememberMe, token } = useAuthStore();
 
   useEffect(() => {
-    if (!_hasHydrated) return;
+    if (!_hasHydrated || !rememberMe || !token) {
+      return;
+    }
 
     async function checkRefreshToken() {
       const { rememberMe } = useAuthStore.getState();
@@ -24,6 +26,4 @@ export default function AutoLogin() {
     }
     checkRefreshToken();
   }, [setToken, clearToken]);
-
-  return null;
 }

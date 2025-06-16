@@ -11,7 +11,7 @@ export default function ReportForm({
   matchRoomId,
 }: {
   closeAction: () => void;
-  matchRoomId: number;
+  matchRoomId: number | null;
 }) {
   const { methods, onSubmit, reportError, codeOptions, ConfirmModal } = useReportForm({
     closeAction,

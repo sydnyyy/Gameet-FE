@@ -13,6 +13,7 @@ interface ChatInputAreaProps {
   handleMatchEnd: () => void;
   participantId: number;
   token: string;
+  handleReportModalOpen: () => void;
 }
 
 export default function ChatInputArea({
@@ -25,6 +26,7 @@ export default function ChatInputArea({
   handleMatchEnd,
   participantId,
   token,
+  handleReportModalOpen,
 }: ChatInputAreaProps) {
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
 
@@ -46,7 +48,7 @@ export default function ChatInputArea({
                 label: "약속 설정",
                 onClick: () => setShowAppointmentForm(true),
               },
-              { label: "신고", onClick: () => alert("신고") },
+              { label: "신고", onClick: handleReportModalOpen },
               { label: "매칭 종료", onClick: handleMatchEnd },
             ].map(({ label, onClick }) => (
               <button
