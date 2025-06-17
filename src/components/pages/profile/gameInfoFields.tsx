@@ -1,7 +1,11 @@
 import ToggleButton from "@/components/common/button/ToggleButton";
 import { GameInfoFormProps } from "@/types/profile";
 
-export default function GameInfoFields({ methods, codeOptions }: GameInfoFormProps) {
+export default function GameInfoFields({
+  methods,
+  codeOptions,
+  readOnly = false,
+}: GameInfoFormProps) {
   if (!codeOptions) return <div>Loading...</div>;
 
   const game_platforms = Object.entries(codeOptions.GAME_PLATFORM);
@@ -26,12 +30,16 @@ export default function GameInfoFields({ methods, codeOptions }: GameInfoFormPro
             <ToggleButton
               key={key}
               isActive={isActive}
-              onClick={() => {
-                const updated = isActive
-                  ? watchedGamePlatforms.filter(item => item !== key)
-                  : [...watchedGamePlatforms, key];
-                methods.setValue("game_platforms", updated);
-              }}
+              onClick={
+                readOnly
+                  ? undefined
+                  : () => {
+                      const updated = isActive
+                        ? watchedGamePlatforms.filter(item => item !== key)
+                        : [...watchedGamePlatforms, key];
+                      methods.setValue("game_platforms", updated);
+                    }
+              }
             >
               {label}
             </ToggleButton>
@@ -47,12 +55,16 @@ export default function GameInfoFields({ methods, codeOptions }: GameInfoFormPro
             <ToggleButton
               key={key}
               isActive={isActive}
-              onClick={() => {
-                const updated = isActive
-                  ? watchedPreferredGenres.filter(item => item !== key)
-                  : [...watchedPreferredGenres, key];
-                methods.setValue("preferred_genres", updated);
-              }}
+              onClick={
+                readOnly
+                  ? undefined
+                  : () => {
+                      const updated = isActive
+                        ? watchedPreferredGenres.filter(item => item !== key)
+                        : [...watchedPreferredGenres, key];
+                      methods.setValue("preferred_genres", updated);
+                    }
+              }
             >
               {label}
             </ToggleButton>
@@ -66,7 +78,7 @@ export default function GameInfoFields({ methods, codeOptions }: GameInfoFormPro
           <ToggleButton
             key={key}
             isActive={watchedPlayStyle === key}
-            onClick={() => methods.setValue("play_style", key)}
+            onClick={readOnly ? undefined : () => methods.setValue("play_style", key)}
           >
             {label}
           </ToggleButton>
@@ -79,7 +91,7 @@ export default function GameInfoFields({ methods, codeOptions }: GameInfoFormPro
           <ToggleButton
             key={key}
             isActive={watchedGameSkillLevel === key}
-            onClick={() => methods.setValue("game_skill_level", key)}
+            onClick={readOnly ? undefined : () => methods.setValue("game_skill_level", key)}
           >
             {label}
           </ToggleButton>
@@ -90,13 +102,13 @@ export default function GameInfoFields({ methods, codeOptions }: GameInfoFormPro
       <div className="flex gap-2 mb-2">
         <ToggleButton
           isActive={watchedIsVoice === true}
-          onClick={() => methods.setValue("is_voice", true)}
+          onClick={readOnly ? undefined : () => methods.setValue("is_voice", true)}
         >
           가능
         </ToggleButton>
         <ToggleButton
           isActive={watchedIsVoice === false}
-          onClick={() => methods.setValue("is_voice", false)}
+          onClick={readOnly ? undefined : () => methods.setValue("is_voice", false)}
         >
           불가능
         </ToggleButton>
@@ -106,13 +118,13 @@ export default function GameInfoFields({ methods, codeOptions }: GameInfoFormPro
       <div className="flex gap-2 mb-2">
         <ToggleButton
           isActive={watchedIsAdultMatchAllowed === true}
-          onClick={() => methods.setValue("is_adult_match_allowed", true)}
+          onClick={readOnly ? undefined : () => methods.setValue("is_adult_match_allowed", true)}
         >
           가능
         </ToggleButton>
         <ToggleButton
           isActive={watchedIsAdultMatchAllowed === false}
-          onClick={() => methods.setValue("is_adult_match_allowed", false)}
+          onClick={readOnly ? undefined : () => methods.setValue("is_adult_match_allowed", false)}
         >
           불가능
         </ToggleButton>

@@ -32,4 +32,5 @@ export interface GameInfoFormProps {
   codeOptions: CommonCodeOptions | null;
   setStep?: (step: number) => void;
   handleSubmit?: (data: ProfileFormType) => void;
+  readOnly?: boolean;
 }

@@ -10,6 +10,10 @@ export default function GameInfoForm({
   setStep,
   handleSubmit,
 }: GameInfoFormProps) {
+  if (!handleSubmit) {
+    throw new Error("GameInfoForm에는 handleSubmit이 반드시 필요합니다.");
+  }
+
   return (
     <>
       <h2 className="text-xl font-semibold mb-4">내 게임 정보를 알려주세요</h2>
