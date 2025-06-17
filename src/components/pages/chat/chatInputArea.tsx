@@ -84,7 +84,8 @@ export default function ChatInputArea({
           matchRoomId={matchRoomId}
           participantId={participantId}
           token={token}
-          closeAction={() => setShowAppointmentForm(false)}
+          isOpen={showAppointmentForm}
+          onClose={() => setShowAppointmentForm(false)}
         />
       )}
     </div>

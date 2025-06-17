@@ -23,9 +23,9 @@ export const useMatchNotification = () => {
 
       setStatus(newMatchStatus);
 
-      if (notificationData.match_status === "MATCHED" && notificationData.match_room_id) {
-        router.push(`/chat/${notificationData.match_room_id}`);
-      }
+      // if (notificationData.match_status === "MATCHED" && notificationData.match_room_id) {
+      //   router.push(`/chat/${notificationData.match_room_id}`);
+      // }
     }
   };
 

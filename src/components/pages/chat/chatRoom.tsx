@@ -67,7 +67,7 @@ export default function ChatRoom({ matchRoomId, matchStatus }: ChatRoomProps) {
                 setShowOptions={setShowOptions}
                 handleSend={handleSend}
                 handleMatchEnd={handleMatchEnd}
-                participantId={participantInfo?.match_participant_id!}
+                participantId={participantInfo?.other_match_participant_info.match_participant_id!}
                 token={token!}
                 handleReportModalOpen={report.onOpen}
               />

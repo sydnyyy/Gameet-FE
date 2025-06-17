@@ -1,7 +1,21 @@
 // 참가자 정보 타입
 export interface ParticipantInfo {
-  match_participant_id: number;
-  user_profile_id: number;
+  my_match_participant_info: {
+    match_participant_id: number;
+    is_reported: boolean;
+  };
+  other_match_participant_info: {
+    match_participant_id: number;
+    user_profile: {
+      nickname: string;
+      game_platforms: string[];
+      preferred_genres: string[];
+      play_style: string;
+      game_skill_level: string;
+      is_voice: boolean;
+      is_adult_match_allowed: boolean;
+    };
+  };
 }
 
 // 채팅 메시지 타입
@@ -34,5 +48,5 @@ export interface OpponentProfile {
 // 컴포넌트 Props
 export interface ChatRoomProps {
   matchRoomId: number | null;
-  matchStatus?: string | null;
+  matchStatus: string | null;
 }

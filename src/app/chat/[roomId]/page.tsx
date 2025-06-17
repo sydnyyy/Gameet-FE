@@ -1,10 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { use } from "react";
 
 const ChatRoom = dynamic(() => import("@/components/pages/chat/chatRoom"), { ssr: false });
 
-export default function Chat({ params }: { params: { roomId: string } }) {
+export default function Chat(props: { params: Promise<{ roomId: string }> }) {
+  const params = use(props.params);
   const matchRoomId = Number(params.roomId);
 
   return (
