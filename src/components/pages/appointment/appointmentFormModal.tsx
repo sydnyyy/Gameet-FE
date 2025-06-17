@@ -4,13 +4,15 @@ import { apiRequest } from "@/app/api/apiRequest";
 import { getStompClient } from "@/app/api/socket";
 import Buttons from "@/components/common/button/Buttons";
 import BaseDateTimePicker from "@/components/common/input/BaseDatePicker";
+import Modals from "@/components/common/modal/Modals"; // ← 이 부분 주의
 import { FormProvider, useForm } from "react-hook-form";
 
 interface Props {
   matchRoomId: number;
   participantId: number;
   token: string;
-  closeAction: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 interface FormValues {
@@ -21,9 +23,10 @@ export default function AppointmentFormModal({
   matchRoomId,
   participantId,
   token,
-  closeAction,
+  isOpen,
+  onClose,
 }: Props) {
-  const methods = useForm<{ appointment: string }>({
+  const methods = useForm<FormValues>({
     defaultValues: { appointment: "" },
   });
 
@@ -50,8 +53,7 @@ export default function AppointmentFormModal({
         client.send("/app/chat.send", { Authorization: token }, JSON.stringify(appointmentMessage));
       }
 
-      alert("약속 시간이 설정되었습니다.");
-      closeAction();
+      onClose();
     } catch (error) {
       console.error("약속 설정 실패:", error);
       alert("약속 설정에 실패했습니다.");
@@ -59,26 +61,16 @@ export default function AppointmentFormModal({
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-      <div className="bg-[#403a45] rounded-xl p-6 w-96">
-        <h1 className="text-lg font-semibold text-white mb-4">약속 시간 설정</h1>
+    <Modals isOpen={isOpen} onClose={onClose} headerText="약속 시간 설정" className="w-96">
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <BaseDateTimePicker name="appointment" rules={{ required: "약속 시간을 선택해주세요" }} />
 
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <BaseDateTimePicker
-              name="appointment"
-              rules={{ required: "약속 시간을 선택해주세요" }}
-            />
-
-            <div className="flex justify-end mt-4 gap-2">
-              <Buttons type="button" onClick={closeAction}>
-                취소
-              </Buttons>
-              <Buttons type="submit">확인</Buttons>
-            </div>
-          </form>
-        </FormProvider>
-      </div>
-    </div>
+          <div className="flex justify-end mt-4 gap-2">
+            <Buttons type="submit">확인</Buttons>
+          </div>
+        </form>
+      </FormProvider>
+    </Modals>
   );
 }
