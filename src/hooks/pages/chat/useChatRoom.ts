@@ -3,7 +3,7 @@ import { connectSocket, getStompClient } from "@/app/api/socket";
 import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
-import { ChatMessage, ChatPayload, OpponentProfile, ParticipantInfo } from "@/types/chat";
+import { ChatMessage, ChatPayload, ParticipantInfo } from "@/types/chat";
 import { ProfileFormType } from "@/types/profile";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -14,7 +14,6 @@ export function useChatRoom(matchRoomId: number | null) {
   const router = useRouter();
 
   const [participantInfo, setParticipantInfo] = useState<ParticipantInfo | null>(null);
-  const [opponentProfile, setOpponentProfile] = useState<OpponentProfile | null>(null);
   const [messages, setMessages] = useState<ChatPayload[]>([]);
   const [input, setInput] = useState("");
   const [showOptions, setShowOptions] = useState(false);
@@ -23,20 +22,14 @@ export function useChatRoom(matchRoomId: number | null) {
   const hasSentEnterMessageRef = useRef(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // RHF setup for readOnly GameInfoFields
   const methods = useForm<ProfileFormType>({
     defaultValues: {
-      nickname: "",
-      age: undefined,
-      show_age: true,
-      gender: "N",
       game_platforms: [],
       preferred_genres: [],
       play_style: "",
       game_skill_level: "",
       is_voice: true,
       is_adult_match_allowed: true,
-      min_manner_score: 50,
     },
   });
 
@@ -69,6 +62,15 @@ export function useChatRoom(matchRoomId: number | null) {
           "GET",
         );
         setParticipantInfo(participant);
+
+        // 상대방 프로필 정보 반영
+        const profile = participant.other_match_participant_info.user_profile;
+        methods.setValue("game_platforms", profile.game_platforms);
+        methods.setValue("preferred_genres", profile.preferred_genres);
+        methods.setValue("play_style", profile.play_style);
+        methods.setValue("game_skill_level", profile.game_skill_level);
+        methods.setValue("is_voice", profile.is_voice);
+        methods.setValue("is_adult_match_allowed", profile.is_adult_match_allowed);
 
         const client = getStompClient() ?? (await connectSocket());
 
@@ -164,7 +166,6 @@ export function useChatRoom(matchRoomId: number | null) {
     showOptions,
     setShowOptions,
     participantInfo,
-    opponentProfile,
     handleSend,
     handleMatchEnd,
     participantId: participantInfo?.other_match_participant_info.match_participant_id ?? null,
