@@ -24,10 +24,10 @@ export default function ChatMessages({
       style={{ backgroundColor: "#403a45", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)" }}
     >
       {messages.map((msg, idx) => {
-        const myId = participantInfo?.other_match_participant_info.match_participant_id;
+        const myId = participantInfo?.my_match_participant_info.match_participant_id;
         if (!myId) return null;
 
-        const isMine = msg.matchParticipantId === myId;
+        const isMine = msg.matchParticipantId !== myId;
         const time = msg.sendAt ? new Date(msg.sendAt).toLocaleTimeString() : "";
 
         if ((msg.messageType === "ENTER" || msg.messageType === "QUIT") && isMine) return null;

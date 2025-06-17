@@ -1,5 +1,5 @@
 "use client";
-import { connectSocket, getStompClient } from "@/app/api/socket";
+import { connectSocket } from "@/app/api/socket";
 import { useMatchNotificationHandler } from "@/hooks/pages/match/useMatchNotification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Client, IMessage } from "@stomp/stompjs";
@@ -26,17 +26,8 @@ export default function useNotifySocket() {
 
     const subNotification = async () => {
       isSocketConnected.current = true;
-      let client: any = null;
       try {
-        if (!client || !client.active) {
-          console.log("WebSocket 연결 시도");
-          client = await connectSocket();
-          console.log("WebSocket 연결 완료");
-        } else {
-          client = getStompClient();
-          console.log("기존 WebSocket 연결 재사용.");
-        }
-
+        const client = await connectSocket();
         clientRef.current = client;
 
         client.subscribe(
