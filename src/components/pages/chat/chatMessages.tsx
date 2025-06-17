@@ -24,7 +24,7 @@ export default function ChatMessages({
       style={{ backgroundColor: "#403a45", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)" }}
     >
       {messages.map((msg, idx) => {
-        const myId = participantInfo?.match_participant_id;
+        const myId = participantInfo?.other_match_participant_info.match_participant_id;
         if (!myId) return null;
 
         const isMine = msg.matchParticipantId === myId;
