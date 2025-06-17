@@ -10,7 +10,8 @@ import useMatchToast from "@/hooks/toast/useMatchToast";
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
 
-  function NotifySocketAndAutoLogin() {
+  // 전역 실행 훅(로그인 상태 유지, 소켓 연결, Toast 전역에 띄우기)
+  function AppSetup() {
     useAutoLogin();
     useNotifySocket();
     useMatchToast();
@@ -20,7 +21,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider className="flex flex-col flex-1 min-h-0 pt-[80px]">
-        <NotifySocketAndAutoLogin />
+        <AppSetup />
         <ToastProvider />
         {children}
       </HeroUIProvider>
