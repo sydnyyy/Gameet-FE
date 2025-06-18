@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 // 요청 인터셉터 => accessToken 자동 추가
 axiosInstance.interceptors.request.use(config => {
   const { token, _hasHydrated } = useAuthStore.getState();
-  if (_hasHydrated && token) {
+  if (_hasHydrated && token && !config.skipAuth) {
     config.headers.Authorization = token;
   }
   return config;
@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use(
 
     // skipAuth 값이 true인 경우 재발급 X
     if (originReq.skipAuth) {
-      return Promise.reject(error);
+      return Promise.reject(handleAxiosError(error));
     }
 
     // accessToken 만료 시 재시도
@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
       try {
         const refreshRes = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/token/refresh`,
-          // {},
+          {},
           {
             withCredentials: true,
           },
