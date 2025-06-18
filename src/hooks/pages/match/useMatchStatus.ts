@@ -16,6 +16,7 @@ export const useMatchQueue = () => {
       return res.data;
     },
     refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 };
 
@@ -27,10 +28,10 @@ export const useStartMatch = () => {
       const res = await apiRequest<MatchStatusType>("match", "POST", payload);
       return res.data;
     },
-    onSuccess: data => {
+    onSuccess: async data => {
       console.log("매칭 시작:", data);
       // 매칭 시작 시 상태 업데이트
-      queryClient.invalidateQueries({ queryKey: matchQueryKeys.status() });
+      await queryClient.refetchQueries({ queryKey: matchQueryKeys.status() });
     },
     onError: err => {
       console.log("매칭 시작 실패:", err);
