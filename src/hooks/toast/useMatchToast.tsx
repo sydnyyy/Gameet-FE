@@ -35,9 +35,7 @@ export default function useMatchToast() {
         title: "매칭 완료!",
         description: "매칭이 완료되었습니다.",
         buttonContent: (
-          <Buttons size="sm" onClick={() => router.push("/match")}>
-            채팅방으로 이동
-          </Buttons>
+          <Buttons children="채팅방으로 이동" size="sm" onClick={() => router.push("/match")} />
         ),
       });
 
