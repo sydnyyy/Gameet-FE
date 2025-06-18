@@ -151,7 +151,6 @@ export function useChatRoom(matchRoomId: number | null) {
   const handleMatchEnd = async () => {
     try {
       await apiRequest(`/chat/${matchRoomId}/complete`, "PATCH");
-      router.push("/");
     } catch (error) {
       console.error("매칭 종료 실패:", error);
       alert("매칭 종료 중 오류가 발생했습니다.");
