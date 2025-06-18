@@ -11,7 +11,7 @@ interface UseToastArgs {
 
 export default function useToast() {
   const showToast = useCallback(
-    ({ title, description, timeout = 10000, buttonContent, ...props }: UseToastArgs) => {
+    ({ title, description, timeout = 5000, buttonContent, ...props }: UseToastArgs) => {
       addToast({
         title: title,
         description: description,
