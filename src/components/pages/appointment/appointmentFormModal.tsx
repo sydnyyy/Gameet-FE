@@ -1,7 +1,7 @@
 "use client";
 
 import { apiRequest } from "@/app/api/apiRequest";
-import { getStompClient } from "@/app/api/socket";
+import { connectSocket } from "@/app/api/socket";
 import Buttons from "@/components/common/button/Buttons";
 import BaseDateTimePicker from "@/components/common/input/BaseDatePicker";
 import Modals from "@/components/common/modal/Modals"; // ← 이 부분 주의
@@ -42,7 +42,7 @@ export default function AppointmentFormModal({
         match_appointment_time: appointment,
       });
 
-      const client = getStompClient();
+      const client = await connectSocket();
       if (client) {
         const appointmentMessage = {
           matchParticipantId: participantId,
