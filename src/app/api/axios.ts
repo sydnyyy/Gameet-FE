@@ -32,9 +32,9 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originReq._retry) {
       originReq._retry = true;
       try {
-        const refreshRes = await await axios.post(
+        const refreshRes = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/auth/token/refresh`,
-          {},
+          // {},
           {
             withCredentials: true,
           },
@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
           } else {
             originReq.headers = { Authorization: newToken };
           }
-          return axiosInstance(originReq);
+          return Promise.reject(handleAxiosError(error));
         }
       } catch (reissueError) {
         // 재발급 실패 시 토큰 초기화
