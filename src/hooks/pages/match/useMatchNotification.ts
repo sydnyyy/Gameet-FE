@@ -10,7 +10,7 @@ export const useMatchNotificationHandler = () => {
   // 매칭 알림 메시지 관리
   const handleMatchNotification = (notificationData: MatchStatusType) => {
     const status = notificationData.match_status;
-    if (status === "MATCHED" || status === "FAILED") {
+    if (status === "MATCHED" || status === "FAILED" || status === "COMPLETED") {
       const newMatchStatus: MatchStatusType = {
         match_status: notificationData.match_status,
         match_room_id: notificationData.match_room_id,
@@ -19,6 +19,10 @@ export const useMatchNotificationHandler = () => {
 
       queryClient.setQueryData(matchQueryKeys.status(), newMatchStatus);
       console.log("캐시 업데이트:", newMatchStatus);
+
+      if (status === "COMPLETED") {
+        router.push("/");
+      }
 
       // if (notificationData.match_status === "MATCHED" && notificationData.match_room_id) {
       //   router.push(`/chat/${notificationData.match_room_id}`);
