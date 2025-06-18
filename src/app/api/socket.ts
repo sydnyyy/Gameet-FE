@@ -11,10 +11,8 @@ async function getWsToken(): Promise<boolean> {
   }
   try {
     await apiRequest("users/auth/token/websocket", "GET");
-    console.log("웹소켓 토큰 발급 성공");
     return true;
   } catch (error) {
-    console.log("웹소켓 토큰 발급 실패");
     return false;
   }
 }
@@ -36,7 +34,7 @@ export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<
   let attempt = 0;
   while (attempt < maxRetries) {
     attempt++;
-    console.log(`웹소켓 연결 시도 (${attempt}/${maxRetries})`);
+    // console.log(`웹소켓 연결 시도 (${attempt}/${maxRetries})`);
 
     try {
       const client = await new Promise<CompatClient>((resolve, reject) => {
@@ -45,7 +43,6 @@ export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<
         tempClient.connect(
           { Authorization: token || "" },
           () => {
-            console.log("웹소켓 연결 성공 (CompatClient)");
             resolve(tempClient);
           },
           (error: Frame) => {
@@ -70,8 +67,6 @@ export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<
 // webSocket 연결 해제
 export const disconnectSocket = (client: CompatClient | null) => {
   if (client && client.connected) {
-    client.disconnect(() => {
-      console.log("웹소켓 연결 해제 (CompatClient 인스턴스 해제)");
-    });
+    client.disconnect(() => {});
   }
 };

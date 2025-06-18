@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { matchQueryKeys } from "./useMatchStatus";
 import { MatchStatusType } from "@/types/match";
 import { useMatchStatusStore } from "@/store/useMatchStatus";
@@ -7,7 +6,6 @@ import { useMatchStatusStore } from "@/store/useMatchStatus";
 export const useMatchNotification = () => {
   const queryClient = useQueryClient();
   const { setStatus } = useMatchStatusStore();
-  const router = useRouter();
 
   // 매칭 알림 메시지 관리
   const handleMatchNotification = (notificationData: MatchStatusType) => {
@@ -20,12 +18,7 @@ export const useMatchNotification = () => {
       };
 
       queryClient.setQueryData(matchQueryKeys.status(), newMatchStatus);
-
       setStatus(newMatchStatus);
-
-      // if (notificationData.match_status === "MATCHED" && notificationData.match_room_id) {
-      //   router.push(`/chat/${notificationData.match_room_id}`);
-      // }
     }
   };
 

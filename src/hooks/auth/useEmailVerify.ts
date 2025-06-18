@@ -37,12 +37,10 @@ export function useEmailVerify({
       );
     },
     onSuccess: () => {
-      console.log("인증번호 전송 성공");
       setIsEmailSend(true);
       clearErrors("email");
     },
     onError: (error: any) => {
-      console.log("인증번호 전송 실패", error?.response?.data || error.message);
       setError("email", { type: "server", message: error?.response?.data || error.message });
     },
   });
@@ -58,12 +56,10 @@ export function useEmailVerify({
       );
     },
     onSuccess: () => {
-      console.log("인증번호 전송 성공");
       setIsEmailVerify(true);
       clearErrors("authCode");
     },
     onError: (error: any) => {
-      console.log("인증번호 전송 실패", error);
       setError("authCode", { type: "server", message: error?.response?.data || error.message });
     },
   });

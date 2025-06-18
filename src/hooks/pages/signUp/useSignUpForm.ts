@@ -38,11 +38,10 @@ export function useSignUpForm() {
       );
     },
     onSuccess: () => {
-      console.log("회원가입 성공:");
       router.push("/login");
     },
     onError: (error: any) => {
-      console.log("회원가입 실패:", error);
+      console.error(error);
     },
   });
 

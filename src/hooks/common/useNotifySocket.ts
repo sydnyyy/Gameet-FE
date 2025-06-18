@@ -1,6 +1,6 @@
 "use client";
 import { connectSocket } from "@/app/api/socket";
-import { useMatchNotificationHandler } from "@/hooks/pages/match/useMatchNotification";
+import { useMatchNotification } from "@/hooks/pages/match/useMatchNotification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Client, IMessage } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";
@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
 export default function useNotifySocket() {
   const token = useAuthStore(state => state.token);
   const _hasHydrated = useAuthStore(state => state._hasHydrated);
-  const { handleMatchNotification } = useMatchNotificationHandler();
+  const { handleMatchNotification } = useMatchNotification();
   const isSocketConnected = useRef(false);
   const clientRef = useRef<Client | null>(null);
 
@@ -33,10 +33,8 @@ export default function useNotifySocket() {
         client.subscribe(
           "/user/queue/notify",
           (msg: IMessage) => {
-            console.log("구독 수신");
             try {
               const notificationData = JSON.parse(msg.body);
-              console.log("개인 알림 수신:", notificationData);
               handleMatchNotification(notificationData);
             } catch (e) {
               console.error("메시지 파싱 실패:", e);
@@ -54,7 +52,6 @@ export default function useNotifySocket() {
     subNotification();
     return () => {
       if (clientRef.current?.active) {
-        console.log("WebSocket 클린업: 연결 해제");
         clientRef.current.deactivate();
       }
       clientRef.current = null;
