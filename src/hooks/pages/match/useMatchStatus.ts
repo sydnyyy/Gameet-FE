@@ -16,6 +16,7 @@ export const useMatchQueue = () => {
       return res.data;
     },
     refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 };
 
@@ -27,13 +28,12 @@ export const useStartMatch = () => {
       const res = await apiRequest<MatchStatusType>("match", "POST", payload);
       return res.data;
     },
-    onSuccess: data => {
-      console.log("매칭 시작:", data);
+    onSuccess: async () => {
       // 매칭 시작 시 상태 업데이트
-      queryClient.invalidateQueries({ queryKey: matchQueryKeys.status() });
+      await queryClient.refetchQueries({ queryKey: matchQueryKeys.status() });
     },
     onError: err => {
-      console.log("매칭 시작 실패:", err);
+      console.error("매칭 시작 실패:", err);
     },
   });
 };
@@ -46,13 +46,12 @@ export const useCancelMatch = () => {
       const res = await apiRequest<MatchStatusType>("match", "DELETE");
       return res.data;
     },
-    onSuccess: data => {
-      console.log("매칭 취소", data);
+    onSuccess: () => {
       // 매칭 취소 시 상태 업데이트
       queryClient.invalidateQueries({ queryKey: matchQueryKeys.status() });
     },
     onError: err => {
-      console.log("매칭 취소 실패:", err);
+      console.error("매칭 취소 실패:", err);
     },
   });
 };
