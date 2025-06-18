@@ -12,7 +12,7 @@ export const useMatchNotification = () => {
   // 매칭 알림 메시지 관리
   const handleMatchNotification = (notificationData: MatchStatusType) => {
     const status = notificationData.match_status;
-    if (status === "MATCHED" || status === "FAILED") {
+    if (status === "MATCHED" || status === "FAILED" || status === "COMPLETED") {
       const newMatchStatus: MatchStatusType = {
         match_status: notificationData.match_status,
         match_room_id: notificationData.match_room_id,

@@ -1,5 +1,5 @@
 import { apiRequest } from "@/app/api/apiRequest";
-import { connectSocket, getStompClient } from "@/app/api/socket";
+import { connectSocket } from "@/app/api/socket";
 import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -72,14 +72,14 @@ export function useChatRoom(matchRoomId: number | null) {
         methods.setValue("is_voice", profile.is_voice);
         methods.setValue("is_adult_match_allowed", profile.is_adult_match_allowed);
 
-        const client = getStompClient() ?? (await connectSocket());
+        const client = await connectSocket();
 
         // 입장 메시지 전송
-        if (!hasSentEnterMessageRef.current && participantInfo) {
+        if (!hasSentEnterMessageRef.current) {
           const entryMessage: ChatMessage = {
-            matchParticipantId: participantInfo.other_match_participant_info.match_participant_id,
+            matchParticipantId: participant.other_match_participant_info.match_participant_id,
             messageType: "ENTER",
-            content: `${participantInfo?.other_match_participant_info.user_profile.nickname ?? "상대방"}님이 입장하셨습니다.`,
+            content: `${profile.nickname ?? "상대방"}님이 입장하셨습니다.`,
           };
 
           client.send("/app/chat.send", { Authorization: token! }, JSON.stringify(entryMessage));
@@ -98,7 +98,7 @@ export function useChatRoom(matchRoomId: number | null) {
     if (!matchRoomId) return;
 
     const subscribeToMessages = async () => {
-      const client = getStompClient() ?? (await connectSocket());
+      const client = await connectSocket();
 
       // 기존 구독 해제
       if (subscriptionRef.current) {
@@ -119,7 +119,6 @@ export function useChatRoom(matchRoomId: number | null) {
     subscribeToMessages();
 
     return () => {
-      // cleanup
       if (subscriptionRef.current) {
         subscriptionRef.current.unsubscribe();
         subscriptionRef.current = null;
@@ -127,15 +126,16 @@ export function useChatRoom(matchRoomId: number | null) {
     };
   }, [matchRoomId, token]);
 
-  // 메시지 도착 시 스크롤 아래로
+  // 스크롤 하단 이동
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   // 메시지 전송
-  const handleSend = () => {
-    const client = getStompClient();
-    if (!client || !input.trim() || !participantInfo) return;
+  const handleSend = async () => {
+    if (!input.trim() || !participantInfo) return;
+
+    const client = await connectSocket();
 
     const chatMessage: ChatMessage = {
       matchParticipantId: participantInfo.other_match_participant_info.match_participant_id,
@@ -151,7 +151,6 @@ export function useChatRoom(matchRoomId: number | null) {
   const handleMatchEnd = async () => {
     try {
       await apiRequest(`/chat/${matchRoomId}/complete`, "PATCH");
-      router.push("/");
     } catch (error) {
       console.error("매칭 종료 실패:", error);
       alert("매칭 종료 중 오류가 발생했습니다.");

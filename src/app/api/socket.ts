@@ -13,7 +13,7 @@ async function getWsToken(): Promise<boolean> {
   if (!token) {
     return false;
   }
-  if (hasWsToken && stompClient && stompClient.connected) {
+  if (hasWsToken && stompClient?.connected) {
     return true;
   }
   try {
@@ -28,10 +28,16 @@ async function getWsToken(): Promise<boolean> {
   }
 }
 
-// webSocket 연결
-export const connectSocket = async (): Promise<CompatClient> => {
+// 딜레이 유틸
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// 웹소켓 연결 (재시도 포함)
+export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<CompatClient> => {
   const { token } = useAuthStore.getState();
-  if (stompClient && stompClient.connected) {
+
+  if (stompClient?.connected) {
     return stompClient;
   }
   const isWsToken = await getWsToken();
@@ -39,38 +45,54 @@ export const connectSocket = async (): Promise<CompatClient> => {
     throw new Error("웹소켓 토큰 발급 실패");
   }
 
-  return new Promise<CompatClient>((resolve, reject) => {
-    stompClient = Stomp.over(() => new SockJS("http://localhost:8080/ws"));
-    stompClient.connect(
-      { Authorization: token || "" },
-      () => {
-        console.log("웹소켓 연결 성공");
-        resolve(stompClient!);
-      },
-      (error: Frame) => {
-        console.log("웹소켓 연결 실패:", error);
+  let attempt = 0;
+
+  while (attempt < maxRetries) {
+    attempt++;
+    console.log(`웹소켓 연결 시도 (${attempt}/${maxRetries})`);
+
+    try {
+      const client = await new Promise<CompatClient>((resolve, reject) => {
+        const tempClient = Stomp.over(() => new SockJS("http://localhost:8080/ws"));
+        stompClient = tempClient;
+
+        tempClient.connect(
+          { Authorization: token || "" },
+          () => {
+            console.log("웹소켓 연결 성공");
+            resolve(tempClient);
+          },
+          (error: Frame) => {
+            console.warn("웹소켓 연결 실패:", error);
+            reject(new Error("웹소켓 연결 실패"));
+          },
+        );
+      });
+
+      return client;
+    } catch (e) {
+      console.log(`웹소켓 연결 실패 (${attempt}회차). 재시도 대기...`);
+      if (attempt < maxRetries) {
+        await delay(retryDelay);
+      } else {
+        console.error("웹소켓 연결 재시도 모두 실패");
         stompClient = null;
-        reject(new Error("웹소켓 연결 실패"));
-      },
-    );
-  });
+        hasWsToken = false;
+        throw e;
+      }
+    }
+  }
+
+  throw new Error("웹소켓 연결 실패 (예외 처리 누락)");
 };
 
 // webSocket 연결 해제
 export const disconnectSocket = () => {
-  if (stompClient && stompClient.connected) {
+  if (stompClient?.connected) {
     stompClient.disconnect(() => {
       console.log("웹소켓 연결 해제");
     });
-    stompClient = null;
-    hasWsToken = false;
   }
-};
-
-// stompClient 반환
-export const getStompClient = (): CompatClient | null => {
-  if (stompClient?.connected) {
-    return stompClient;
-  }
-  return null;
+  stompClient = null;
+  hasWsToken = false;
 };
