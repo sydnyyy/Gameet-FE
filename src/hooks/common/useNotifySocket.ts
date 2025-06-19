@@ -52,7 +52,6 @@ export default function useNotifySocket() {
                   break;
                 case "CHAT":
                   handleChatNotification(notificationData);
-                  fetchUnreadCount(userProfileId, setUnreadCount);
                   break;
               }
             } catch (e) {
@@ -63,7 +62,7 @@ export default function useNotifySocket() {
             Authorization: token,
           },
         );
-        // 로그인 시 채팅 안읽은 갯수 한 번 불러오기
+        // 로그인 직후 채팅 안읽은 갯수 한 번 호출
         if (userProfileId && !hasFetchedUnreadCount.current) {
           hasFetchedUnreadCount.current = true;
           fetchUnreadCount(userProfileId, setUnreadCount);

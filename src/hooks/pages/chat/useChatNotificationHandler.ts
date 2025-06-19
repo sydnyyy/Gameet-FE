@@ -1,26 +1,23 @@
 "use client";
 
+import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { fetchUnreadCount } from "./fetchUnreadCount";
 
 export const useChatNotificationHandler = () => {
   const pathname = usePathname();
-  const pathnameRef = useRef(pathname);
-  const myParticipantId = useChatStore(state => state.myMatchParticipantId);
-  const increment = useChatStore(state => state.increment);
+  const { userProfileId } = useAuthStore();
+  const { setUnreadCount, myMatchParticipantId, increment } = useChatStore();
 
-  useEffect(() => {
-    pathnameRef.current = pathname;
-  }, [pathname]);
+  const handleChatNotification = async (payload: { sender_id: number }) => {
+    if (!myMatchParticipantId) return;
 
-  const handleChatNotification = (payload: any) => {
-    const currentPath = pathname;
     const senderId = payload.sender_id;
+    if (senderId === myMatchParticipantId || pathname.startsWith("/match")) return;
 
-    if (senderId !== myParticipantId && !currentPath.startsWith("/match")) {
-      increment();
-    }
+    increment();
+    await fetchUnreadCount(userProfileId, setUnreadCount);
   };
 
   return { handleChatNotification };

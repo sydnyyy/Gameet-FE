@@ -18,6 +18,7 @@ export default function ChatMessages({
   bottomRef,
   setShowProfileModal,
 }: ChatMessagesProps) {
+  if (!participantInfo?.my_match_participant_info) return null;
   return (
     <div
       className="w-[700px] max-w-full rounded-2xl h-[600px] overflow-y-auto mb-4 p-4"

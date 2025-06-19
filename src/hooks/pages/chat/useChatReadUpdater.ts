@@ -1,11 +1,14 @@
 import { apiRequest } from "@/app/api/apiRequest";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { fetchUnreadCount } from "./fetchUnreadCount";
 
 export function useChatReadUpdater() {
   const pathname = usePathname();
-  const { myMatchParticipantId } = useChatStore();
+  const { userProfileId } = useAuthStore();
+  const { myMatchParticipantId, setUnreadCount } = useChatStore();
 
   useEffect(() => {
     const updateLastRead = async () => {
@@ -13,6 +16,7 @@ export function useChatReadUpdater() {
 
       try {
         await apiRequest(`/chat/read/${myMatchParticipantId}`, "PATCH");
+        await fetchUnreadCount(userProfileId, setUnreadCount);
         console.log("마지막으로 읽은 시간 갱신 완료");
       } catch (error) {
         console.error("마지막으로 읽은 시간 갱신 실패", error);
