@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/auth/useAuth";
 import { useChatStore } from "@/store/useChatStore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Badge from "../common/badge/Badge";
 
 export default function NavMenu() {
   const pathname = usePathname();
@@ -21,11 +22,7 @@ export default function NavMenu() {
         <li className={`relative ${isActive("/match")}`}>
           <Link href="/match" className={isActive("/match")}>
             매칭하기
-            {unreadCount > 0 && (
-              <span className="absolute -top-2 -right-4 text-xs bg-red-500 text-white rounded-full px-2">
-                {unreadCount}
-              </span>
-            )}
+            <Badge count={unreadCount} />
           </Link>
         </li>
         {isLogin && (
