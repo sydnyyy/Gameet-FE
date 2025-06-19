@@ -8,7 +8,7 @@ import Badge from "../common/badge/Badge";
 export default function NavMenu() {
   const pathname = usePathname();
   const { isLogin } = useAuth();
-  const { unreadCount } = useChatStore();
+  const unreadCount = useChatStore(state => state.unreadCount);
 
   // 현재 탭 확인 후 스타일 적용
   const isActive = (path: string) =>
@@ -22,7 +22,7 @@ export default function NavMenu() {
         <li className={`relative ${isActive("/match")}`}>
           <Link href="/match" className={isActive("/match")}>
             매칭하기
-            <Badge count={unreadCount} />
+            {unreadCount > 0 && <Badge count={unreadCount} />}
           </Link>
         </li>
         {isLogin && (

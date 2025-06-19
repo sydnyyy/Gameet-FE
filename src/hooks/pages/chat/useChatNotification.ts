@@ -5,19 +5,18 @@ import { useChatStore } from "@/store/useChatStore";
 import { usePathname } from "next/navigation";
 import { fetchUnreadCount } from "./fetchUnreadCount";
 
-export const useChatNotificationHandler = () => {
+export const useChatNotification = () => {
   const pathname = usePathname();
   const { userProfileId } = useAuthStore();
-  const { setUnreadCount, myMatchParticipantId, increment } = useChatStore();
+  const { setUnreadCount, myMatchParticipantId } = useChatStore();
 
   const handleChatNotification = async (payload: { sender_id: number }) => {
-    if (!myMatchParticipantId) return;
+    if (!myMatchParticipantId || payload.sender_id === myMatchParticipantId) return;
 
-    const senderId = payload.sender_id;
-    if (senderId === myMatchParticipantId || pathname.startsWith("/match")) return;
-
-    increment();
-    await fetchUnreadCount(userProfileId, setUnreadCount);
+    // 채팅방이 아닐 때만 안 읽은 개수 갱신
+    if (!pathname.startsWith("/match")) {
+      await fetchUnreadCount(userProfileId, setUnreadCount);
+    }
   };
 
   return { handleChatNotification };
