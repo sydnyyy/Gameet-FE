@@ -1,11 +1,13 @@
 "use client";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { useChatStore } from "@/store/useChatStore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function NavMenu() {
   const pathname = usePathname();
   const { isLogin } = useAuth();
+  const { unreadCount } = useChatStore();
 
   // 현재 탭 확인 후 스타일 적용
   const isActive = (path: string) =>
@@ -16,8 +18,15 @@ export default function NavMenu() {
   return (
     <nav>
       <ul className="flex gap-20">
-        <li className={isActive("/match")}>
-          <Link href="/match">매칭하기</Link>
+        <li className={`relative ${isActive("/match")}`}>
+          <Link href="/match" className={isActive("/match")}>
+            매칭하기
+            {unreadCount > 0 && (
+              <span className="absolute -top-2 -right-4 text-xs bg-red-500 text-white rounded-full px-2">
+                {unreadCount}
+              </span>
+            )}
+          </Link>
         </li>
         {isLogin && (
           <li className={isActive("/profile")}>

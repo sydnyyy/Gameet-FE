@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>()(
       setEmail: email => set({ email }),
       setRole: role => set({ role }),
       setUserProfileId: id => set({ userProfileId: id }),
-      clearToken: () => set({ token: null, email: null }),
+      clearToken: () => set({ token: null, email: null, userProfileId: null }),
       _hasHydrated: false,
       setHasHydrated: state => set({ _hasHydrated: state }),
       rememberMe: false,

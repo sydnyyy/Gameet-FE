@@ -2,16 +2,17 @@ import { apiRequest } from "@/app/api/apiRequest";
 import { connectSocket } from "@/app/api/socket";
 import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
+import { useChatReadUpdater } from "@/hooks/pages/chat/useChatReadUpdater";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useChatStore } from "@/store/useChatStore";
 import { ChatMessage, ChatPayload, ParticipantInfo } from "@/types/chat";
 import { ProfileFormType } from "@/types/profile";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function useChatRoom(matchRoomId: number | null) {
   const { token } = useAuthStore();
-  const router = useRouter();
+  const { setMyMatchParticipantId } = useChatStore();
 
   const [participantInfo, setParticipantInfo] = useState<ParticipantInfo | null>(null);
   const [messages, setMessages] = useState<ChatPayload[]>([]);
@@ -34,6 +35,9 @@ export function useChatRoom(matchRoomId: number | null) {
   });
 
   const codeOptions = useCommonCodeOptions(CommonCodeGroup.MATCH_CONDITION);
+
+  // 마지막으로 읽은 시간 업데이트
+  useChatReadUpdater();
 
   // 메시지 목록 불러오기
   useEffect(() => {
@@ -62,6 +66,7 @@ export function useChatRoom(matchRoomId: number | null) {
           "GET",
         );
         setParticipantInfo(participant);
+        setMyMatchParticipantId(participant.my_match_participant_info.match_participant_id);
 
         // 상대방 프로필 정보 반영
         const profile = participant.other_match_participant_info.user_profile;
@@ -138,7 +143,7 @@ export function useChatRoom(matchRoomId: number | null) {
     const client = await connectSocket();
 
     const chatMessage: ChatMessage = {
-      matchParticipantId: participantInfo.other_match_participant_info.match_participant_id,
+      matchParticipantId: participantInfo.my_match_participant_info.match_participant_id,
       messageType: "TALK",
       content: input.trim(),
     };
