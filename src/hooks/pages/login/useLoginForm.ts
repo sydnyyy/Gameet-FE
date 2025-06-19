@@ -43,7 +43,9 @@ export function useLoginForm() {
         role: string;
         user_id: number;
       };
-      const res = await apiRequest<LoginResponse>("/users/auth/login", "POST", data);
+      const res = await apiRequest<LoginResponse>("/users/auth/login", "POST", data, {
+        skipAuth: true,
+      });
       return { res, saveId, email: formData.email, rememberMe };
     },
     onSuccess: ({ res, saveId, email, rememberMe }) => {

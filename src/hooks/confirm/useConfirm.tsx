@@ -47,7 +47,7 @@ export function useConfirm() {
         close={null}
         {...props}
       >
-        {options?.message}
+        <p className="whitespace-pre-line">{options?.message}</p>
         <div className="flex justify-center gap-10">
           <Buttons type="button" className="h-[48px] w-[240px] my-3" onClick={handleConfirm}>
             확인

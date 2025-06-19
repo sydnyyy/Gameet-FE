@@ -9,13 +9,16 @@ import { selectValid } from "@/utils/validations";
 export default function ReportForm({
   closeAction,
   matchRoomId,
+  setIsReportedAction,
 }: {
   closeAction: () => void;
   matchRoomId: number | null;
+  setIsReportedAction: (isReported: boolean) => void;
 }) {
   const { methods, onSubmit, reportError, codeOptions, ConfirmModal } = useReportForm({
     closeAction,
     matchRoomId,
+    setIsReportedAction,
   });
 
   return (

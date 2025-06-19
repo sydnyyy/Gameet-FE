@@ -14,6 +14,7 @@ interface ChatInputAreaProps {
   participantId: number;
   token: string;
   handleReportModalOpen: () => void;
+  isReported: boolean;
 }
 
 export default function ChatInputArea({
@@ -27,6 +28,7 @@ export default function ChatInputArea({
   participantId,
   token,
   handleReportModalOpen,
+  isReported,
 }: ChatInputAreaProps) {
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
 
@@ -48,7 +50,7 @@ export default function ChatInputArea({
                 label: "약속 설정",
                 onClick: () => setShowAppointmentForm(true),
               },
-              { label: "신고", onClick: handleReportModalOpen },
+              ...(isReported ? [] : [{ label: "신고", onClick: handleReportModalOpen }]),
               { label: "매칭 종료", onClick: handleMatchEnd },
             ].map(({ label, onClick }) => (
               <button

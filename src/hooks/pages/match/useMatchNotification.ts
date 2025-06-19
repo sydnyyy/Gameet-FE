@@ -1,11 +1,11 @@
-import { MatchStatusType } from "@/types/match";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { matchQueryKeys } from "./useMatchStatus";
+import { MatchStatusType } from "@/types/match";
+import { useMatchStatusStore } from "@/store/useMatchStatus";
 
-export const useMatchNotificationHandler = () => {
+export const useMatchNotification = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
+  const { setStatus } = useMatchStatusStore();
 
   // 매칭 알림 메시지 관리
   const handleMatchNotification = (notificationData: MatchStatusType) => {
@@ -18,11 +18,7 @@ export const useMatchNotificationHandler = () => {
       };
 
       queryClient.setQueryData(matchQueryKeys.status(), newMatchStatus);
-      console.log("캐시 업데이트:", newMatchStatus);
-
-      // if (notificationData.match_status === "MATCHED" && notificationData.match_room_id) {
-      //   router.push(`/chat/${notificationData.match_room_id}`);
-      // }
+      setStatus(newMatchStatus);
     }
   };
 

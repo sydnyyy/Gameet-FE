@@ -12,6 +12,7 @@ export default function MatchForm() {
   const { methods } = profileForm;
   const { setMatchForm } = useMatchStore();
   const startMatch = useStartMatch();
+  const { isError: isMatchError, error: startMatchError } = startMatch;
 
   // 전역 store에 매칭 조건 값 저장 및 매칭 시작
   const handleSaveSetMatch = methods.handleSubmit(formValues => {
@@ -28,6 +29,9 @@ export default function MatchForm() {
     <FormLayout methods={methods}>
       <h1 className="text-start">✔ 매칭 조건 설정</h1>
       <MatchFormFields methods={profileForm.methods} codeOptions={profileForm.codeOptions} />
+      {isMatchError && (
+        <p className="mt-1 text-sm text-primary-error">{startMatchError?.message}</p>
+      )}
       <Buttons size="lg" type="button" children="매칭 시작하기" onClick={handleSaveSetMatch} />
     </FormLayout>
   );
