@@ -24,6 +24,8 @@ export default function ChatRoom({ matchRoomId, matchStatus }: ChatRoomProps) {
     token,
     methods,
     codeOptions,
+    isReported,
+    setIsReported,
   } = useChatRoom(matchRoomId);
 
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -70,6 +72,7 @@ export default function ChatRoom({ matchRoomId, matchStatus }: ChatRoomProps) {
                 participantId={participantInfo?.other_match_participant_info.match_participant_id!}
                 token={token!}
                 handleReportModalOpen={report.onOpen}
+                isReported={isReported}
               />
             )}
           </>
@@ -77,7 +80,11 @@ export default function ChatRoom({ matchRoomId, matchStatus }: ChatRoomProps) {
       </div>
 
       <report.Modal>
-        <ReportForm matchRoomId={matchRoomId} closeAction={report.onClose} />
+        <ReportForm
+          matchRoomId={matchRoomId}
+          closeAction={report.onClose}
+          setIsReportedAction={setIsReported}
+        />
       </report.Modal>
 
       {matchStatus === "COMPLETED" && (
