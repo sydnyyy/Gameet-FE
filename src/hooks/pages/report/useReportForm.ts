@@ -14,9 +14,11 @@ export interface ReportFormData {
 export function useReportForm({
   closeAction,
   matchRoomId,
+  setIsReportedAction,
 }: {
   closeAction: () => void;
   matchRoomId: number | null;
+  setIsReportedAction: (isReported: boolean) => void;
 }) {
   const methods = useForm<ReportFormData>({
     mode: "onSubmit",
@@ -41,16 +43,18 @@ export function useReportForm({
     onSuccess: () => {
       alert("신고 완료");
       console.log("신고 성공");
+      setIsReportedAction(true);
       closeAction();
     },
     onError: (error: any) => {
       console.error("신고 실패:", error);
+      setIsReportedAction(false);
     },
   });
   const onSubmit = async (formData: ReportFormData) => {
     const ok = await confirm({
       headerText: "🚨신고 확인",
-      message: "이 사용자를 신고하시겠습니까?",
+      message: "신고는 한번만 할 수 있습니다.\n정말로 이 사용자를 신고하시겠습니까?",
     });
 
     if (ok) {

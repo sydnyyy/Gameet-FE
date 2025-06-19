@@ -17,6 +17,7 @@ export function useChatRoom(matchRoomId: number | null) {
   const [messages, setMessages] = useState<ChatPayload[]>([]);
   const [input, setInput] = useState("");
   const [showOptions, setShowOptions] = useState(false);
+  const [isReported, setIsReported] = useState(false);
 
   const subscriptionRef = useRef<ReturnType<any> | null>(null);
   const hasSentEnterMessageRef = useRef(false);
@@ -62,6 +63,7 @@ export function useChatRoom(matchRoomId: number | null) {
           "GET",
         );
         setParticipantInfo(participant);
+        setIsReported(participant.my_match_participant_info.is_reported);
 
         // 상대방 프로필 정보 반영
         const profile = participant.other_match_participant_info.user_profile;
@@ -171,5 +173,7 @@ export function useChatRoom(matchRoomId: number | null) {
     token,
     methods,
     codeOptions,
+    isReported,
+    setIsReported,
   };
 }
