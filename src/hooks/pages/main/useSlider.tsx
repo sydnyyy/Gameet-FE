@@ -11,6 +11,6 @@ export function useSlider<T>(items: T[], time: number) {
     }, time);
 
     return () => clearInterval(interval);
-  }, [items.length]);
+  }, [items.length, time]);
   return { current, items };
 }

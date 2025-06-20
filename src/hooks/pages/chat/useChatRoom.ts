@@ -93,7 +93,7 @@ export function useChatRoom(matchRoomId: number | null) {
     };
 
     fetchParticipantInfo();
-  }, [matchRoomId]);
+  }, [methods, token, matchRoomId]);
 
   // 메시지 구독
   useEffect(() => {
