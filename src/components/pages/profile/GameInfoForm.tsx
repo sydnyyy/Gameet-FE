@@ -2,7 +2,7 @@
 
 import Buttons from "@/components/common/button/Buttons";
 import { GameInfoFormProps } from "@/types/profile";
-import GameInfoFields from "./gameInfoFields";
+import GameInfoFields from "./GameInfoFields";
 
 export default function GameInfoForm({
   methods,

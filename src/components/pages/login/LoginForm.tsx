@@ -2,7 +2,7 @@
 import Buttons from "@/components/common/button/Buttons";
 import BaseCheckbox from "@/components/common/checkbox/BaseCheckbox";
 import Inputs from "@/components/common/input/Inputs";
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import { useLoginForm } from "@/hooks/pages/login/useLoginForm";
 import { emailValid } from "@/utils/validations";
 import Link from "next/link";

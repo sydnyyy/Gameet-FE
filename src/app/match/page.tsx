@@ -1,6 +1,6 @@
 "use client";
 import RequireLoginModal from "@/components/auth/RequireLoginModal";
-import MatchStatusRender from "@/components/pages/match/matchStatusRender";
+import MatchStatusRender from "@/components/pages/match/MatchStatusRender";
 import { useAuth } from "@/hooks/auth/useAuth";
 
 export default function Match() {

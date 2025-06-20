@@ -1,5 +1,5 @@
 "use client";
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import { useProfileForm } from "@/hooks/pages/profile/useProfileForm";
 import { useMatchStore } from "@/store/useMatchStore";
 import Buttons from "@/components/common/button/Buttons";

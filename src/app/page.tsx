@@ -1,6 +1,6 @@
 import Buttons from "@/components/common/button/Buttons";
-import GameSlider from "@/components/pages/main/gameSlider";
-import TextSlider from "@/components/pages/main/textSlider";
+import GameSlider from "@/components/pages/main/GameSlider";
+import TextSlider from "@/components/pages/main/TextSlider";
 import Link from "next/link";
 
 export default function Home() {

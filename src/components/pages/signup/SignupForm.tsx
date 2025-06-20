@@ -2,9 +2,9 @@
 import Buttons from "@/components/common/button/Buttons";
 import Inputs from "@/components/common/input/Inputs";
 import { passwordCheckValid, passwordValid } from "@/utils/validations";
-import TermsArgreement from "./termsAgreement";
+import TermsArgreement from "./TermsAgreement";
 import { useSignUpForm } from "@/hooks/pages/signUp/useSignUpForm";
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import EmailAuthSection from "./EmailAuthSection";
 
 export default function SignUpForm() {
