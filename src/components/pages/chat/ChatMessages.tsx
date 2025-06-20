@@ -60,6 +60,8 @@ export default function ChatMessages({
                 <Image
                   src="/images/games/profile.jpg"
                   alt="상대방 프로필"
+                  width={32}
+                  height={32}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -69,7 +71,7 @@ export default function ChatMessages({
               className={`max-w-[60%] p-3 rounded-lg text-sm break-words relative ${
                 isMine
                   ? "bg-primary text-white rounded-br-none"
-                  : "bg-[#2e2e2e] text-primary rounded-bl-none"
+                  : "bg-[#2e2e2e] text-white rounded-bl-none"
               }`}
             >
               {msg.content}
