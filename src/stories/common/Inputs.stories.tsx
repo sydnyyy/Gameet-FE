@@ -29,6 +29,32 @@ const meta = {
       control: "boolean",
     },
   },
+  decorators: [
+    (Story, context) => {
+      const methods = useForm({
+        defaultValues: {
+          [context.args.name]: "",
+        },
+      });
+
+      return (
+        <div className="w-full max-w-md p-5">
+          <FormProvider {...methods}>
+            <Story />
+            <button
+              type="submit"
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={methods.handleSubmit(data => {
+                console.log(data);
+              })}
+            >
+              제출
+            </button>
+          </FormProvider>
+        </div>
+      );
+    },
+  ],
 } satisfies Meta<typeof Inputs>;
 
 export default meta;
@@ -36,26 +62,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const StoryInputs: Story = {
-  render: args => {
-    const methods = useForm({
-      defaultValues: {
-        [args.name]: "",
-      },
-    });
-
-    return (
-      <div className="w-full max-w-md p-5">
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(data => console.log(data))}>
-            <Inputs {...args} />
-            <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-              제출
-            </button>
-          </form>
-        </FormProvider>
-      </div>
-    );
-  },
+  render: args => <Inputs {...args} />,
   args: {
     name: "email",
     label: "이메일",

@@ -38,7 +38,10 @@ export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<
 
     try {
       const client = await new Promise<CompatClient>((resolve, reject) => {
-        const tempClient = Stomp.over(() => new SockJS("http://localhost:8080/ws"));
+        const sockJs = new SockJS("https://gameet.store/ws", null, {
+          withCredentials: true,
+        } as any);
+        const tempClient = Stomp.over(sockJs);
 
         tempClient.connect(
           { Authorization: token || "" },

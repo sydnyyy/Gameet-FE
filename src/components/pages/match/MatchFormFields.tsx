@@ -1,5 +1,5 @@
 "use client";
-import GameInfoFields from "../profile/gameInfoFields";
+import GameInfoFields from "../profile/GameInfoFields";
 import Sliders from "@/components/common/slider/Sliders";
 import { GameInfoFormProps } from "@/types/profile";
 import { useFormContext } from "react-hook-form";

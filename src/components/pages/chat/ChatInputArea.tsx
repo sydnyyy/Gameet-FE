@@ -1,7 +1,7 @@
 import Buttons from "@/components/common/button/Buttons";
 import { Input } from "@heroui/react";
 import { Dispatch, SetStateAction, useState } from "react";
-import AppointmentFormModal from "../appointment/appointmentFormModal";
+import AppointmentFormModal from "../appointment/AppointmentFormModal";
 
 interface ChatInputAreaProps {
   matchRoomId: number;

@@ -1,6 +1,6 @@
 import Logo from "@/../public/icons/Gameet-Logo.svg";
-import NavMenu from "../nav/navMenu";
-import AuthActions from "./authActions";
+import NavMenu from "../nav/NavMenu";
+import AuthActions from "./AuthActions";
 import Link from "next/link";
 
 export default function Header() {

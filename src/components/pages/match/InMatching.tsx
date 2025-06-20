@@ -1,5 +1,5 @@
-import LoadingSpinner from "@/components/pages/match/loadingSpinners";
-import InMatchingStatus from "./inMatchingStatus";
+import LoadingSpinner from "@/components/pages/match/LoadingSpinners";
+import InMatchingStatus from "./InMatchingStatus";
 import { useMatchQueue } from "@/hooks/pages/match/useMatchStatus";
 
 export default function InMatching() {

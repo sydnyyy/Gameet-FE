@@ -1,14 +1,14 @@
 "use client";
 
-import MannerEvaluationForm from "@/components/pages/mannerEvaluation/mannerEvaluationForm";
+import MannerEvaluationForm from "@/components/pages/mannerEvaluation/MannerEvaluationForm";
 import { useModal } from "@/hooks/modal/useModal";
 import { useChatRoom } from "@/hooks/pages/chat/useChatRoom";
 import { ChatRoomProps } from "@/types/chat";
 import { useState } from "react";
-import GameInfoFields from "../profile/gameInfoFields";
-import ReportForm from "../report/reportForm";
-import ChatInputArea from "./chatInputArea";
-import ChatMessages from "./chatMessages";
+import GameInfoFields from "../profile/GameInfoFields";
+import ReportForm from "../report/ReportForm";
+import ChatInputArea from "./ChatInputArea";
+import ChatMessages from "./ChatMessages";
 
 export default function ChatRoom({ matchRoomId, matchStatus }: ChatRoomProps) {
   const {
