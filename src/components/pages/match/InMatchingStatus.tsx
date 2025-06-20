@@ -20,7 +20,9 @@ export default function InMatchingStatus() {
       </ul>
       <p className="text-xl font-semibold">조건에 맞는 게이머를 매칭 중입니다.</p>
 
-      <Buttons type="button" size="lg" children="매칭 취소" onClick={() => cancelMatch.mutate()} />
+      <Buttons type="button" size="lg" onClick={() => cancelMatch.mutate()}>
+        매칭 취소
+      </Buttons>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function MatchStatusRender() {
     console.error(error);
     return (
       <>
-        <Modal headerText="💡 알림" children="매칭 에러. 다시 시도해 주세요." />
+        <Modal headerText="💡 알림">매칭 에러. 다시 시도해 주세요.</Modal>
         <MatchForm />
       </>
     );
@@ -35,7 +35,7 @@ export default function MatchStatusRender() {
     case "FAILED":
       return (
         <>
-          <Modal headerText="💡 알림" children="매칭에 실패했습니다. 다시 시도해 주세요." />
+          <Modal headerText="💡 알림">매칭에 실패했습니다. 다시 시도해 주세요.</Modal>
           <MatchForm />
         </>
       );

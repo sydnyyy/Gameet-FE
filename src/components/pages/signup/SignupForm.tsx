@@ -44,7 +44,9 @@ export default function SignUpForm() {
       {/* 약관 동의 */}
       <TermsArgreement />
 
-      <Buttons type="submit" size="lg" isDisabled={isSubmitDisabled} children="회원가입" />
+      <Buttons type="submit" size="lg" isDisabled={isSubmitDisabled}>
+        회원가입
+      </Buttons>
       {signUpError && <p className="text-red-500">{signUpError}</p>}
     </FormLayout>
   );

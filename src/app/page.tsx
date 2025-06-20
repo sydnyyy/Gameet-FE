@@ -9,13 +9,9 @@ export default function Home() {
       <GameSlider />
       <TextSlider />
       <Link href="/match">
-        <Buttons
-          children="매칭하기"
-          width="250px"
-          height="70px"
-          size="lg"
-          className="text-[28px] font-bold my-16"
-        />
+        <Buttons width="250px" height="70px" size="lg" className="text-[28px] font-bold my-16">
+          매칭하기
+        </Buttons>
       </Link>
     </div>
   );
