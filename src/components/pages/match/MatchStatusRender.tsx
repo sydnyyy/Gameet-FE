@@ -1,10 +1,10 @@
 "use client";
 import { useModal } from "@/hooks/modal/useModal";
 import { useMatchQueue } from "@/hooks/pages/match/useMatchStatus";
-import InMatching from "./inMatching";
-import MatchForm from "./matchForm";
+import InMatching from "./InMatching";
+import MatchForm from "./MatchForm";
 import { useEffect } from "react";
-import ChatRoom from "../chat/chatRoom";
+import ChatRoom from "../chat/ChatRoom";
 
 export default function MatchStatusRender() {
   const { data, isError, error } = useMatchQueue();
@@ -21,7 +21,7 @@ export default function MatchStatusRender() {
     console.error(error);
     return (
       <>
-        <Modal headerText="💡 알림" children="매칭 에러. 다시 시도해 주세요." />
+        <Modal headerText="💡 알림">매칭 에러. 다시 시도해 주세요.</Modal>
         <MatchForm />
       </>
     );
@@ -35,7 +35,7 @@ export default function MatchStatusRender() {
     case "FAILED":
       return (
         <>
-          <Modal headerText="💡 알림" children="매칭에 실패했습니다. 다시 시도해 주세요." />
+          <Modal headerText="💡 알림">매칭에 실패했습니다. 다시 시도해 주세요.</Modal>
           <MatchForm />
         </>
       );

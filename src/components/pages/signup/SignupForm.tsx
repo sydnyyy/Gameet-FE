@@ -2,9 +2,9 @@
 import Buttons from "@/components/common/button/Buttons";
 import Inputs from "@/components/common/input/Inputs";
 import { passwordCheckValid, passwordValid } from "@/utils/validations";
-import TermsArgreement from "./termsAgreement";
+import TermsArgreement from "./TermsAgreement";
 import { useSignUpForm } from "@/hooks/pages/signUp/useSignUpForm";
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import EmailAuthSection from "./EmailAuthSection";
 
 export default function SignUpForm() {
@@ -44,7 +44,9 @@ export default function SignUpForm() {
       {/* 약관 동의 */}
       <TermsArgreement />
 
-      <Buttons type="submit" size="lg" isDisabled={isSubmitDisabled} children="회원가입" />
+      <Buttons type="submit" size="lg" isDisabled={isSubmitDisabled}>
+        회원가입
+      </Buttons>
       {signUpError && <p className="text-red-500">{signUpError}</p>}
     </FormLayout>
   );

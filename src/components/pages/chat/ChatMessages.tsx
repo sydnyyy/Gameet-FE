@@ -1,5 +1,6 @@
 import { ChatPayload, ParticipantInfo } from "@/types/chat";
 import { ProfileFormType } from "@/types/profile";
+import Image from "next/image";
 import { RefObject } from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -57,9 +58,11 @@ export default function ChatMessages({
                 className="w-8 h-8 rounded-full overflow-hidden mr-2 cursor-pointer"
                 onClick={() => setShowProfileModal(true)}
               >
-                <img
+                <Image
                   src="/images/games/profile.jpg"
                   alt="상대방 프로필"
+                  width={32}
+                  height={32}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -69,7 +72,7 @@ export default function ChatMessages({
               className={`max-w-[60%] p-3 rounded-lg text-sm break-words relative ${
                 isMine
                   ? "bg-primary text-white rounded-br-none"
-                  : "bg-[#2e2e2e] text-primary rounded-bl-none"
+                  : "bg-[#2e2e2e] text-white rounded-bl-none"
               }`}
             >
               {msg.content}

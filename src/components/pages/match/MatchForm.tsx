@@ -1,5 +1,5 @@
 "use client";
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import { useProfileForm } from "@/hooks/pages/profile/useProfileForm";
 import { useMatchStore } from "@/store/useMatchStore";
 import Buttons from "@/components/common/button/Buttons";
@@ -32,7 +32,9 @@ export default function MatchForm() {
       {isMatchError && (
         <p className="mt-1 text-sm text-primary-error">{startMatchError?.message}</p>
       )}
-      <Buttons size="lg" type="button" children="매칭 시작하기" onClick={handleSaveSetMatch} />
+      <Buttons size="lg" type="button" onClick={handleSaveSetMatch}>
+        매칭 시작하기
+      </Buttons>
     </FormLayout>
   );
 }

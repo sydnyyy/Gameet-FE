@@ -1,9 +1,9 @@
 "use client";
 
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import { useProfileForm } from "@/hooks/pages/profile/useProfileForm";
-import GameInfoForm from "./gameInfoForm";
-import UserInfoForm from "./userInfoForm";
+import GameInfoForm from "./GameInfoForm";
+import UserInfoForm from "./UserInfoForm";
 
 export default function ProfileForm() {
   const profileForm = useProfileForm();

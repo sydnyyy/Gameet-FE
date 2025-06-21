@@ -25,5 +25,5 @@ export default function useAutoLogin() {
       }
     }
     checkRefreshToken();
-  }, [setToken, clearToken]);
+  }, [_hasHydrated, rememberMe, token, setToken, clearToken]);
 }

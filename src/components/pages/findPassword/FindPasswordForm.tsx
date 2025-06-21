@@ -1,8 +1,8 @@
 "use client";
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import { useFindPasswordForm } from "@/hooks/pages/findPassword/useFindPasswordForm";
-import EmailVerifyFormPart from "@/components/pages/findPassword/emailVerifyFormPart";
-import ResetPasswordFormPart from "@/components/pages/findPassword/resetPasswordFormPart";
+import EmailVerifyFormPart from "@/components/pages/findPassword/EmailVerifyFormPart";
+import ResetPasswordFormPart from "@/components/pages/findPassword/ResetPasswordFormPart";
 
 export default function FindPasswordForm() {
   const findPasswordForm = useFindPasswordForm();

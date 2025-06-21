@@ -1,6 +1,6 @@
 "use client";
 
-import FormLayout from "@/components/form/formLayout";
+import FormLayout from "@/components/form/FormLayout";
 import Buttons from "@/components/common/button/Buttons";
 import BaseSelect from "@/components/common/select/baseSelect";
 import { selectValid } from "@/utils/validations";

@@ -93,7 +93,9 @@ export function useChatRoom(matchRoomId: number | null) {
         console.error("참가자 정보 불러오기 실패:", error);
       }
     })();
-  }, [matchRoomId]);
+
+    // fetchParticipantInfo();
+  }, [methods, token, matchRoomId]);
 
   // WebSocket 구독
   useEffect(() => {
