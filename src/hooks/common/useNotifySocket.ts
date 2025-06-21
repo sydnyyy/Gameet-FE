@@ -95,7 +95,7 @@ export default function useNotifySocket() {
     };
 
     fetchIfNeeded();
-  }, [userProfileId]);
+  }, [userProfileId, setUnreadCount]);
 
   if (!token || !_hasHydrated) return null;
 }

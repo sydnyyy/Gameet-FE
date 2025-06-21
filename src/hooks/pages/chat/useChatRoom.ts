@@ -91,7 +91,7 @@ export function useChatRoom(matchRoomId: number | null) {
     })();
 
     // fetchParticipantInfo();
-  }, [methods, token, matchRoomId]);
+  }, [methods, token, matchRoomId, setMyMatchParticipantId]);
 
   // WebSocket 구독
   useEffect(() => {
