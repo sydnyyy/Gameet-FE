@@ -31,7 +31,8 @@ export function useLoginForm() {
     setMounted(true);
   }, [methods]);
 
-  const { setToken, setEmail, setRole, rememberMe, setRememberMe } = useAuthStore();
+  const { setToken, setEmail, setRole, rememberMe, setRememberMe, setUserProfileId } =
+    useAuthStore();
 
   // 로그인
   const loginMutation = useMutation({
@@ -39,7 +40,8 @@ export function useLoginForm() {
       // req에 saveId 제외
       const { saveId, ...data } = formData;
       type LoginResponse = {
-        role: "GUEST" | "USER" | "ADMIN";
+        role: string;
+        user_id: number;
       };
       const res = await apiRequest<LoginResponse>("/users/auth/login", "POST", data, {
         skipAuth: true,
@@ -48,6 +50,9 @@ export function useLoginForm() {
     },
     onSuccess: ({ res, saveId, email, rememberMe }) => {
       const token = res.headers.authorization;
+      const userRole = res.data?.role;
+      const userId = res.data?.user_id;
+
       setRememberMe(rememberMe);
       setEmail(email);
 
@@ -56,8 +61,8 @@ export function useLoginForm() {
 
       if (token) {
         setToken(token);
-        const userRole = res.data?.role;
         setRole(userRole);
+        setUserProfileId(userId);
 
         if (userRole === "GUEST") {
           router.push("/profile");
