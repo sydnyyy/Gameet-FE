@@ -19,6 +19,7 @@ export default function ChatMessages({
   bottomRef,
   setShowProfileModal,
 }: ChatMessagesProps) {
+  if (!participantInfo?.my_match_participant_info) return null;
   return (
     <div
       className="w-[700px] max-w-full rounded-2xl h-[600px] overflow-y-auto mb-4 p-4"
@@ -28,7 +29,7 @@ export default function ChatMessages({
         const myId = participantInfo?.my_match_participant_info.match_participant_id;
         if (!myId) return null;
 
-        const isMine = msg.matchParticipantId !== myId;
+        const isMine = msg.matchParticipantId === myId;
         const time = msg.sendAt ? new Date(msg.sendAt).toLocaleTimeString() : "";
 
         if ((msg.messageType === "ENTER" || msg.messageType === "QUIT") && isMine) return null;
