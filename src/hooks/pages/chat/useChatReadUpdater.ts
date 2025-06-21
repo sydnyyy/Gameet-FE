@@ -27,5 +27,5 @@ export function useChatReadUpdater() {
     if (pathname.startsWith("/match")) {
       updateLastRead();
     }
-  }, [pathname, myMatchParticipantId]);
+  }, [pathname, myMatchParticipantId, setUnreadCount]);
 }
