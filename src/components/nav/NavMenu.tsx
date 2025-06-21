@@ -22,7 +22,7 @@ export default function NavMenu() {
         <li className={`relative ${isActive("/match")}`}>
           <Link href="/match" className={isActive("/match")}>
             매칭하기
-            {unreadCount > 0 && <Badge count={unreadCount} />}
+            {pathname !== "/match" && unreadCount > 0 && <Badge count={unreadCount} />}
           </Link>
         </li>
         {isLogin && (

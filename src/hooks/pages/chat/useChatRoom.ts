@@ -2,7 +2,6 @@ import { apiRequest } from "@/app/api/apiRequest";
 import { connectSocket } from "@/app/api/socket";
 import { CommonCodeGroup } from "@/constants/code/CommonCodeGroup";
 import { useCommonCodeOptions } from "@/hooks/code/useCommonCodeOptions";
-import { useChatReadUpdater } from "@/hooks/pages/chat/useChatReadUpdater";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
 import { ChatMessage, ChatPayload, ParticipantInfo } from "@/types/chat";
@@ -37,9 +36,6 @@ export function useChatRoom(matchRoomId: number | null) {
   });
 
   const codeOptions = useCommonCodeOptions(CommonCodeGroup.MATCH_CONDITION);
-
-  // 마지막으로 읽은 시간 업데이트
-  useChatReadUpdater();
 
   // 메시지 목록 불러오기
   useEffect(() => {

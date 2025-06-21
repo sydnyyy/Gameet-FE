@@ -7,8 +7,9 @@ import { fetchUnreadCount } from "./fetchUnreadCount";
 
 export function useChatReadUpdater() {
   const pathname = usePathname();
-  const { userProfileId } = useAuthStore();
-  const { myMatchParticipantId, setUnreadCount } = useChatStore();
+  const userProfileId = useAuthStore(state => state.userProfileId);
+  const myMatchParticipantId = useChatStore(state => state.myMatchParticipantId);
+  const setUnreadCount = useChatStore(state => state.setUnreadCount);
 
   useEffect(() => {
     const updateLastRead = async () => {
