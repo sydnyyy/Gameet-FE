@@ -3,7 +3,7 @@
 ## 프로젝트 소개
 ![겜밋 목업](https://github.com/user-attachments/assets/efa8d531-9d6d-4f9b-9463-1a5888b3ece7)
 
-**[GAMEET 바로 가기🔗](https://gameet.vercel.app/match)**
+**[GAMEET 바로 가기🔗](https://gameet.vercel.app/)**
 
 **GAMEET**은 선호하는 게임 장르와 스타일이 맞는 **게이머를 실시간으로 매칭**해 주는 웹 서비스입니다. 
 <br>
@@ -74,6 +74,8 @@ pnpm storybook // 스토리북 실행
    ┗ 📁 utils             # 그 외 유틸리티
  ┗ 📄 .env.local
  ┗ 📄 .eslintrc.js
+ ┗ 📄 .gitignore
+ ┗ 📄 .npmrc
  ┗ 📄 .prettierrc.js
  ┗ 📄 next.config.ts
  ┗ 📄 package.json
