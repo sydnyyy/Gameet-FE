@@ -1,4 +1,14 @@
-# Play2Win Front-End
+# 👾Gameet👾
+
+## 프로젝트 소개
+![겜밋 목업](https://github.com/user-attachments/assets/efa8d531-9d6d-4f9b-9463-1a5888b3ece7)
+
+**[GAMEET 바로 가기🔗](https://gameet.vercel.app/match)**
+
+**GAMEET**은 선호하는 게임 장르와 스타일이 맞는 **게이머를 실시간으로 매칭**해 주는 웹 서비스입니다. 
+<br>
+매칭된 친구와 채팅을 통해 어떤 게임을 할 지 이야기를 나눠 보세요.
+
 
 ## 프로젝트 실행 방법
 
@@ -14,7 +24,7 @@ pnpm storybook // 스토리북 실행
 | :-----------------: | :---------------------------------------: |
 |    **Language**     |          JavaScript, TypeScript           |
 |    **FrameWork**    |                  Next.js                  |
-|     **Styling**     |     Tailwind CSS, Emotion, twin.macro     |
+|     **Styling**     |              Tailwind CSS, HeroUI         |
 |      **State**      |          Zustand, TanStack Query          |
 |      **Form**       |              React Hook Form              |
 |   **Lint/Format**   | ESLint (`next/core-web-vitals`), Prettier |
@@ -23,7 +33,64 @@ pnpm storybook // 스토리북 실행
 
 ## 폴더 구조
 
-- 논의 중
+```
+📁 gameet-fe
+ ┗ 📁 public
+ ┗ 📁 src
+   ┣ 📁 app
+   ┃ ┣ 📁 api             # axios 인스턴스, 공통 API 연결 로직, 소켓 연결 로직
+   ┃ ┣ 📁 chat
+   ┃ ┣ 📁 find-password
+   ┃ ┣ 📁 login
+   ┃ ┣ 📁 match
+   ┃ ┣ 📁 profile
+   ┃ ┣ 📁 signup         
+   ┃ ┣ ⚙️ layout.tsx      # 최상위 layout
+   ┃ ┣ ⚙️ page.tsx
+   ┃ ┗ ⚙️ providers.tsx
+   ┃ ┗ 📁 components      # 재사용 가능한 UI 컴포넌트
+   ┃ ┃ ┣ 📁 auth        # 인증 컴포넌트
+   ┃ ┃ ┣ 📁 common      # 공통 컴포넌트
+   ┃ ┃ ┣ 📁 form        # 폼 컴포넌트
+   ┃ ┃ ┣ 📁 layout      # 레이아웃 컴포넌트
+   ┃ ┃ ┣ 📁 nav         # 네비게이션 컴포넌트
+   ┃ ┃ ┗ 📁 pages       # 페이지 별 컴포넌트
+   ┃ ┃ ┃ ┣ 📁 appointment
+   ┃ ┃ ┃ ┣ 📁 chat
+   ┃ ┃ ┃ ┣ 📁 findPassword
+   ┃ ┃ ┃ ┣ 📁 login
+   ┃ ┃ ┃ ┣ 🏠 main
+   ┃ ┃ ┃ ┣ 📁 mannerEvaluation
+   ┃ ┃ ┃ ┣ 📁 match
+   ┃ ┃ ┃ ┣ 📁 profile
+   ┃ ┃ ┃ ┣ 📁 report
+   ┃ ┃ ┃ ┗ 📁 signup
+   ┣ 📁 constants         # 전역 상수
+   ┣ 📁 hooks             # 커스텀 React Hooks
+   ┣ 📁 store             # Zustand 전역 상태 관리
+   ┣ 📁 stories           # Storybook 공통 스토리
+   ┣ 📁 styles            # tailwind 공통 스타일
+   ┣ 📁 types             # TypeScript 타입
+   ┗ 📁 utils             # 그 외 유틸리티
+ ┗ 📄 .env.local
+ ┗ 📄 .eslintrc.js
+ ┗ 📄 .prettierrc.js
+ ┗ 📄 next.config.ts
+ ┗ 📄 package.json
+ ┗ 📄 pnpm-lock.yaml
+ ┗ 📄 tailwind.config.ts
+   ```
+
+## 기능 소개
+
+### 🖥️ 메인
+![녹화_2025_06_23_03_33_25_483](https://github.com/user-attachments/assets/b6742bca-4b1a-432f-b0ad-5d6486cad89c)
+
+### 🖥️ 회원가입
+![캡처_2025_06_23_03_32_07_331](https://github.com/user-attachments/assets/31a7f88b-256d-42c8-a628-7e4d1551b1b7)
+
+### 🖥️ 매칭하기
+![녹화_2025_06_23_03_38_25_468](https://github.com/user-attachments/assets/5edec5b2-15ed-4bd4-abf4-4b28086a5d31)
 
 ## 커밋/브랜치 컨벤션
 
