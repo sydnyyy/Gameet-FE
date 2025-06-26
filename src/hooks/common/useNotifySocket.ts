@@ -8,6 +8,7 @@ import { useChatStore } from "@/store/useChatStore";
 import { Client, IMessage } from "@stomp/stompjs";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { useChatReadUpdater } from "../pages/chat/useChatReadUpdater";
 
 export default function useNotifySocket() {
   const pathname = usePathname();
@@ -23,6 +24,9 @@ export default function useNotifySocket() {
 
   const isSocketConnected = useRef(false);
   const clientRef = useRef<Client | null>(null);
+
+  // 채팅방 진입 시 읽음 처리
+  useChatReadUpdater();
 
   useEffect(() => {
     // 연결 조건 확인
