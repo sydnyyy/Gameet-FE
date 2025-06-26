@@ -4,7 +4,7 @@ import Buttons from "@/components/common/button/Buttons";
 import ToggleButton from "@/components/common/button/ToggleButton";
 import Inputs from "@/components/common/input/Inputs";
 import { UserInfoFormProps } from "@/types/profile";
-import { nicknameValid, passwordCheckValid, passwordValid } from "@/utils/validations";
+import { ageValid, nicknameValid, passwordCheckValid, passwordValid } from "@/utils/validations";
 
 const GENDERS = [
   { value: "M", label: "남성" },
@@ -65,7 +65,7 @@ export default function UserInfoForm({
           <Inputs
             {...methods.register("confirm_password")}
             name="confirm_password"
-            label="비밀번호 확인"
+            label="새 비밀번호 확인"
             type="password"
             rules={passwordCheckValid(() => methods.getValues("password"))}
           />
@@ -91,6 +91,7 @@ export default function UserInfoForm({
           label="나이"
           type="number"
           defaultValue=""
+          rules={ageValid}
         />
         <Buttons
           type="button"
