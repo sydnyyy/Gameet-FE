@@ -58,14 +58,14 @@ export default function UserInfoForm({
           <Inputs
             {...methods.register("password")}
             name="password"
-            label="새 비밀번호"
+            label="비밀번호"
             type="password"
             rules={passwordValid}
           />
           <Inputs
             {...methods.register("confirm_password")}
             name="confirm_password"
-            label="새 비밀번호 확인"
+            label="비밀번호 확인"
             type="password"
             rules={passwordCheckValid(() => methods.getValues("password"))}
           />
