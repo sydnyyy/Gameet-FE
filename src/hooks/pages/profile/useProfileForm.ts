@@ -9,29 +9,6 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-// 닉네임 변경 감지
-function useWatchNicknameChange(
-  methods: ReturnType<typeof useForm<ProfileFormType>>,
-  originalNickname: string,
-  nicknameChecked: boolean,
-  setNicknameChecked: (checked: boolean) => void,
-) {
-  useEffect(() => {
-    const subscription = methods.watch((value, { name }) => {
-      if (name === "nickname") {
-        const current = value.nickname?.trim();
-        if (nicknameChecked && current !== originalNickname) {
-          setNicknameChecked(false);
-        } else if (!nicknameChecked && current === originalNickname) {
-          setNicknameChecked(true);
-        }
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [methods, originalNickname, nicknameChecked, setNicknameChecked]);
-}
-
 export function useProfileForm(defaultOverrides = {}) {
   const { email, role } = useAuthStore.getState();
   const router = useRouter();
@@ -74,8 +51,8 @@ export function useProfileForm(defaultOverrides = {}) {
     queryKey: ["userProfile", email],
     queryFn: async () => {
       const res = await apiRequest<ProfileFormType>(`/users/profile`, "GET");
-      if (data?.user_id) {
-        setUserProfileId(data.user_id);
+      if (res.data?.user_id) {
+        setUserProfileId(res.data.user_id);
       }
       return res.data;
     },
@@ -83,7 +60,19 @@ export function useProfileForm(defaultOverrides = {}) {
     refetchOnWindowFocus: false,
   });
 
-  // data 존재 여부 확인 추가
+  // 닉네임 변경 감지
+  const nicknameRegister = methods.register("nickname", {
+    onChange: e => {
+      const value = e.target.value.trim();
+      methods.setValue("nickname", value, { shouldValidate: true });
+
+      setNicknameState(prev => ({
+        ...prev,
+        checked: value === prev.original,
+      }));
+    },
+  });
+
   useEffect(() => {
     if (data && !isProfileLoading) {
       methods.reset(data);
@@ -100,10 +89,6 @@ export function useProfileForm(defaultOverrides = {}) {
       alert(msg);
     }
   }, [error]);
-
-  useWatchNicknameChange(methods, nicknameState.original, nicknameState.checked, checked =>
-    setNicknameState(prev => ({ ...prev, checked })),
-  );
 
   // 닉네임 중복 확인 핸들러
   const handleNicknameCheck = useCallback(async () => {
@@ -134,7 +119,13 @@ export function useProfileForm(defaultOverrides = {}) {
 
     try {
       const method = role === "GUEST" ? "POST" : "PUT";
-      await apiRequest(`/users/profile`, method, payload);
+      const res = await apiRequest(`/users/profile`, method, payload);
+      const newToken = res.headers?.authorization;
+      if (newToken) {
+        const { setToken, setRole } = useAuthStore.getState();
+        setToken(newToken);
+        setRole("USER");
+      }
 
       alert(role === "GUEST" ? "프로필 생성이 완료되었습니다." : "프로필 수정이 완료되었습니다.");
       router.push("/");
@@ -162,6 +153,7 @@ export function useProfileForm(defaultOverrides = {}) {
     step,
     setStep,
     nicknameChecked: nicknameState.checked,
+    nicknameRegister,
     codeOptions,
     role,
     router,

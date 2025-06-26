@@ -2,13 +2,13 @@
 import { connectSocket } from "@/app/api/socket";
 import { fetchUnreadCount } from "@/hooks/pages/chat/fetchUnreadCount";
 import { useChatNotification } from "@/hooks/pages/chat/useChatNotification";
-import { useChatReadUpdater } from "@/hooks/pages/chat/useChatReadUpdater";
 import { useMatchNotification } from "@/hooks/pages/match/useMatchNotification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
 import { Client, IMessage } from "@stomp/stompjs";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { useChatReadUpdater } from "../pages/chat/useChatReadUpdater";
 
 export default function useNotifySocket() {
   const pathname = usePathname();
