@@ -2,7 +2,6 @@
 import { connectSocket } from "@/app/api/socket";
 import { fetchUnreadCount } from "@/hooks/pages/chat/fetchUnreadCount";
 import { useChatNotification } from "@/hooks/pages/chat/useChatNotification";
-import { useChatReadUpdater } from "@/hooks/pages/chat/useChatReadUpdater";
 import { useMatchNotification } from "@/hooks/pages/match/useMatchNotification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
@@ -24,9 +23,6 @@ export default function useNotifySocket() {
 
   const isSocketConnected = useRef(false);
   const clientRef = useRef<Client | null>(null);
-
-  // 채팅방 진입 시 읽음 처리
-  useChatReadUpdater();
 
   useEffect(() => {
     // 연결 조건 확인
