@@ -43,6 +43,13 @@ export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<
         } as any);
         const tempClient = Stomp.over(sockJs);
 
+        // 배포 환경에서 로그 제거
+        if (process.env.NODE_ENV === "production") {
+          tempClient.debug = () => {};
+        } else {
+          tempClient.debug = console.log;
+        }
+
         tempClient.connect(
           { Authorization: token || "" },
           () => {

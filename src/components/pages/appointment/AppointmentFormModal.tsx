@@ -55,8 +55,10 @@ export default function AppointmentFormModal({
 
       onClose();
     } catch (error) {
-      console.error("약속 설정 실패:", error);
-      alert("약속 설정에 실패했습니다.");
+      const err = error as { message?: string };
+      const msg = err?.message || "약속 설정에 실패했습니다.";
+
+      alert(msg);
     }
   };
 
@@ -64,7 +66,20 @@ export default function AppointmentFormModal({
     <Modals isOpen={isOpen} onClose={onClose} headerText="약속 시간 설정" className="w-96">
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <BaseDateTimePicker name="appointment" rules={{ required: "약속 시간을 선택해주세요" }} />
+          <BaseDateTimePicker
+            name="appointment"
+            rules={{
+              required: "약속 시간을 선택해주세요.",
+              validate: (value: string) => {
+                const [hourStr, minuteStr] = value.split(":");
+                const now = new Date();
+                const selected = new Date(now);
+                selected.setHours(Number(hourStr), Number(minuteStr), 0, 0);
+
+                return selected > now || "현재 이후의 시간을 선택해주세요.";
+              },
+            }}
+          />
 
           <div className="flex justify-end mt-4 gap-2">
             <Buttons type="submit">확인</Buttons>

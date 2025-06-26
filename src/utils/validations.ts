@@ -48,3 +48,16 @@ export const authCodeValid: RegisterOptions = {
 export const selectValid: RegisterOptions = {
   required: "항목을 선택해 주세요.",
 };
+
+export const ageValid: RegisterOptions = {
+  required: "나이는 필수 입력 항목입니다.",
+};
+
+export const atLeastOneSelected = (fieldName: string) => ({
+  validate: (value?: string[]) =>
+    value && value.length > 0 ? true : `최소 한 개 이상의 ${fieldName}을 선택해 주세요.`,
+});
+
+export const booleanRequired = (message: string) => ({
+  validate: (value: boolean | null | undefined) => value === true || value === false || message,
+});

@@ -30,7 +30,7 @@ export default function LoginForm() {
       <Buttons type="submit" className="h-[48px] text-md" isDisabled={!methods.formState.isValid}>
         로그인
       </Buttons>
-      {error && <p className="mt-1 text-sm text-primary-error">{error.message}</p>}
+      {error && <p className="mt-1 text-sm text-primary-error">{error}</p>}
 
       <div className="flex justify-center gap-5 items-center text-primary-gray my-3">
         <Link href="/find-password">비밀번호 찾기</Link>

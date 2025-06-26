@@ -1,9 +1,7 @@
 import { useForm } from "react-hook-form";
-import { apiRequest } from "@/app/api/apiRequest";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
 import { useEmailVerify } from "../../auth/useEmailVerify";
 import { EmailVerifyType } from "@/constants/auth/EmailVerifyType";
+import { useSignUpMutation } from "./useSignUpMutation";
 
 export interface SignUpFormData {
   email: string;
@@ -12,8 +10,7 @@ export interface SignUpFormData {
   passwordCheck: string;
 }
 
-export function useSignUpForm() {
-  const router = useRouter();
+export function useSignUpForm(onSuccessCallback?: () => void) {
   const methods = useForm<SignUpFormData>({
     mode: "onBlur",
     criteriaMode: "all",
@@ -22,28 +19,7 @@ export function useSignUpForm() {
       password: "",
     },
   });
-
-  // 회원가입
-  const signUpMutation = useMutation({
-    mutationFn: async (formData: SignUpFormData) => {
-      const { email, password } = formData;
-      return await apiRequest(
-        "/users/auth/sign-up/user",
-        "POST",
-        {
-          email,
-          password,
-        },
-        { skipAuth: true },
-      );
-    },
-    onSuccess: () => {
-      router.push("/login");
-    },
-    onError: (error: any) => {
-      console.error(error);
-    },
-  });
+  const signUpMutation = useSignUpMutation();
 
   const { isEmailSend, isEmailVerify, sendCode, verifyCode } = useEmailVerify({
     email: methods.watch("email"),
