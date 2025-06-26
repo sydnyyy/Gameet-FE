@@ -9,9 +9,10 @@ import { ProfileFormType } from "@/types/profile";
 import { StompSubscription } from "@stomp/stompjs";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { fetchUnreadCount } from "./fetchUnreadCount";
 
 export function useChatRoom(matchRoomId: number | null) {
-  const { token } = useAuthStore();
+  const { token, userProfileId } = useAuthStore();
   const { setMyMatchParticipantId } = useChatStore();
 
   const [participantInfo, setParticipantInfo] = useState<ParticipantInfo | null>(null);
@@ -23,6 +24,7 @@ export function useChatRoom(matchRoomId: number | null) {
   const subscriptionRef = useRef<StompSubscription | null>(null);
   const hasSentEnterMessageRef = useRef(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const setUnreadCount = useChatStore(state => state.setUnreadCount);
 
   const methods = useForm<ProfileFormType>({
     defaultValues: {
@@ -96,6 +98,7 @@ export function useChatRoom(matchRoomId: number | null) {
   // WebSocket 구독
   useEffect(() => {
     if (!matchRoomId || !token) return;
+
     (async () => {
       const client = await connectSocket();
 
@@ -113,6 +116,20 @@ export function useChatRoom(matchRoomId: number | null) {
         },
         { Authorization: token! },
       );
+
+      // 마지막 읽은 시간 갱신 + 안 읽은 메시지 수 업데이트
+      if (participantInfo) {
+        try {
+          await apiRequest(
+            `/chat/read/${participantInfo.my_match_participant_info.match_participant_id}`,
+            "PATCH",
+          );
+          await fetchUnreadCount(userProfileId, setUnreadCount);
+          console.log("마지막으로 읽은 시간 갱신 완료");
+        } catch (error) {
+          console.error("마지막으로 읽은 시간 갱신 실패", error);
+        }
+      }
     })();
 
     return () => {

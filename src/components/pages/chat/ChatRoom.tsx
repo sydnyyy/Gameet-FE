@@ -5,7 +5,7 @@ import { useModal } from "@/hooks/modal/useModal";
 import { useChatRoom } from "@/hooks/pages/chat/useChatRoom";
 import { ChatRoomProps } from "@/types/chat";
 import { useState } from "react";
-import GameInfoFields from "../profile/GameInfoFields";
+import GameInfoView from "../profile/GameInfoView";
 import ReportForm from "../report/ReportForm";
 import ChatInputArea from "./ChatInputArea";
 import ChatMessages from "./ChatMessages";
@@ -47,7 +47,12 @@ export default function ChatRoom({ matchRoomId, matchStatus }: ChatRoomProps) {
                   닫기
                 </button>
               </div>
-              <GameInfoFields methods={methods} codeOptions={codeOptions} readOnly />
+              {codeOptions && participantInfo?.other_match_participant_info?.user_profile && (
+                <GameInfoView
+                  codeOptions={codeOptions}
+                  values={participantInfo.other_match_participant_info.user_profile}
+                />
+              )}
             </div>
           </div>
         ) : (
