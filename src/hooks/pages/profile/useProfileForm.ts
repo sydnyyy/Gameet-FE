@@ -122,7 +122,9 @@ export function useProfileForm(defaultOverrides = {}) {
       const res = await apiRequest(`/users/profile`, method, payload);
       const newToken = res.headers?.authorization;
       if (newToken) {
-        useAuthStore.getState().setToken(newToken);
+        const { setToken, setRole } = useAuthStore.getState();
+        setToken(newToken);
+        setRole("USER");
       }
 
       alert(role === "GUEST" ? "프로필 생성이 완료되었습니다." : "프로필 수정이 완료되었습니다.");
