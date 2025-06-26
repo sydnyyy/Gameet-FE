@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import ChatRoom from "../chat/ChatRoom";
 
 export default function MatchStatusRender() {
-  const { data, isError, error } = useMatchQueue();
+  const { data, isLoading, isError, error } = useMatchQueue();
   const { onOpen, Modal } = useModal();
 
   // 매칭 실패 시 실패 알림 모달 열기
@@ -26,6 +26,8 @@ export default function MatchStatusRender() {
       </>
     );
   }
+
+  if (isLoading && !data) return null;
 
   switch (data?.match_status) {
     case "SEARCHING":
