@@ -21,6 +21,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Test - print current branch
+        run: |
+          echo "테스트"
+          git branch
+
       - name: Add fork remote
         run: git remote add fork https://coo1river:${{ secrets.FORK_SYNC_TOKEN }}@github.com/coo1river/gameet-FE.git
 
