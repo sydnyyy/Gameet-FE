@@ -1,0 +1,29 @@
+name: Sync to Fork
+
+on:
+  push:
+    branches:
+      - main 
+  workflow_dispatch: 
+
+jobs:
+  sync-fork:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the original repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add fork remote
+        run: git remote add fork https://coo1river:${{ secrets.FORK_SYNC_TOKEN }}@github.com/coo1river/gameet-FE.git
+
+      - name: Push main to fork
+        run: |
+          git push fork main --force
