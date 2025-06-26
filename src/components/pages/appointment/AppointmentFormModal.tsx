@@ -55,8 +55,10 @@ export default function AppointmentFormModal({
 
       onClose();
     } catch (error) {
-      console.error("약속 설정 실패:", error);
-      alert("약속 설정에 실패했습니다.");
+      const err = error as { message?: string };
+      const msg = err?.message || "약속 설정에 실패했습니다.";
+
+      alert(msg);
     }
   };
 
