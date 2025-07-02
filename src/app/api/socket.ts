@@ -4,16 +4,18 @@ import SockJS from "sockjs-client";
 import { apiRequest } from "./apiRequest";
 
 // websocket Token 발급
-async function getWsToken(): Promise<boolean> {
+async function getWsToken(): Promise<string | null> {
   const { token } = useAuthStore.getState();
   if (!token) {
-    return false;
+    return null;
   }
+
   try {
-    await apiRequest("users/auth/token/websocket", "GET");
-    return true;
+    const res = await apiRequest("users/auth/token/websocket", "GET");
+    // @ts-ignore
+    return res.data.webSocketToken ?? null;
   } catch (error) {
-    return false;
+    return null;
   }
 }
 
@@ -26,8 +28,8 @@ function delay(ms: number): Promise<void> {
 export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<CompatClient> => {
   const { token } = useAuthStore.getState();
 
-  const isWsTokenValid = await getWsToken();
-  if (!isWsTokenValid) {
+  const webSocketToken = await getWsToken();
+  if (!webSocketToken) {
     throw new Error("웹소켓 연결을 위한 토큰 발급/갱신 실패");
   }
 
@@ -38,9 +40,13 @@ export const connectSocket = async (maxRetries = 3, retryDelay = 1000): Promise<
 
     try {
       const client = await new Promise<CompatClient>((resolve, reject) => {
-        const sockJs = new SockJS("https://gameet.store/ws", null, {
-          withCredentials: true,
-        } as any);
+        // 쿠키 적용 금지
+        // const sockJs = new SockJS("http://localhost:8080/ws", null, {  // "https://gameet.store/ws"
+        //   withCredentials: true,
+        // } as any);
+
+        // @ts-ignore
+        const sockJs = new SockJS(`http://localhost:8080/ws?websocket_token=${webSocketToken}`); // "https://gameet.store/ws"
         const tempClient = Stomp.over(sockJs);
 
         // 배포 환경에서 로그 제거
