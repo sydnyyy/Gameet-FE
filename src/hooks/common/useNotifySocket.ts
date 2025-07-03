@@ -51,6 +51,7 @@ export default function useNotifySocket() {
           async (msg: IMessage) => {
             try {
               const notificationData = JSON.parse(msg.body);
+              console.log("NotificationPayload:", notificationData);
 
               if (notificationData.message_type === "CHAT") {
                 await handleChatNotification(notificationData);
