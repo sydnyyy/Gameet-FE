@@ -80,7 +80,9 @@ export default function useNotifySocket() {
       isSocketConnected.current = false;
       hasFetchedUnreadCount.current = false;
     };
-  }, [token, _hasHydrated, pathname, handleMatchNotification, handleChatNotification]);
+  }, [_hasHydrated, token]);
+  // STOMP 중복 연결 이슈로 주석 처리
+  // }, [token, _hasHydrated, pathname, handleMatchNotification, handleChatNotification]);
 
   useEffect(() => {
     // 로그인 직후 1회 안 읽은 채팅 개수 불러오기
