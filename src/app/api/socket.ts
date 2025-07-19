@@ -3,8 +3,15 @@ import { CompatClient, Frame, Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { apiRequest } from "./apiRequest";
 
-// websocket Token 발급
+const WS_TOKEN_KEY = "webSocketToken";
+
+// websocket Token 발급 or 재사용
 async function getWsToken(): Promise<string | null> {
+  const cachedToken = sessionStorage.getItem(WS_TOKEN_KEY);
+  if (cachedToken) {
+    return cachedToken;
+  }
+
   const { token } = useAuthStore.getState();
   if (!token) {
     return null;
@@ -13,7 +20,12 @@ async function getWsToken(): Promise<string | null> {
   try {
     const res = await apiRequest("users/auth/token/websocket", "GET");
     // @ts-ignore
-    return res.data.webSocketToken ?? null;
+    // return res.data.webSocketToken ?? null;
+    const newToken = res.data.webSocketToken ?? null;
+    if (newToken) {
+      sessionStorage.setItem(WS_TOKEN_KEY, newToken);
+    }
+    return newToken;
   } catch (error) {
     return null;
   }
