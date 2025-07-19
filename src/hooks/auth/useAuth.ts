@@ -16,6 +16,7 @@ export function useAuth() {
   const logout = () => {
     clearToken();
     resetChatStore();
+    sessionStorage.removeItem("webSocketToken");
     router.push("/");
   };
 
