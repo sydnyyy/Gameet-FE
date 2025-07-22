@@ -2,6 +2,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { WS_TOKEN_KEY, CLIENT_ID_KEY } from "@/constants/auth/storageKeys";
 
 export function useAuth() {
   const router = useRouter();
@@ -16,7 +17,10 @@ export function useAuth() {
   const logout = () => {
     clearToken();
     resetChatStore();
-    sessionStorage.removeItem("webSocketToken");
+
+    localStorage.removeItem(CLIENT_ID_KEY);
+    sessionStorage.removeItem(WS_TOKEN_KEY);
+
     router.push("/");
   };
 
