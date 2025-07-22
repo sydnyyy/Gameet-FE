@@ -3,9 +3,7 @@ import { CompatClient, Frame, Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { apiRequest } from "./apiRequest";
 import { v4 as uuidv4 } from "uuid";
-
-const WS_TOKEN_KEY = "webSocketToken";
-const CLIENT_ID_KEY = "clientId";
+import { WS_TOKEN_KEY, CLIENT_ID_KEY } from "@/constants/auth/storageKeys";
 
 // client ID GET (client -> Chrome, Safari...)
 function getClientId(): string {
