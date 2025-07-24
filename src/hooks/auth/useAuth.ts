@@ -3,6 +3,7 @@ import { useChatStore } from "@/store/useChatStore";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { WS_TOKEN_KEY, CLIENT_ID_KEY } from "@/constants/auth/storageKeys";
+import { apiRequest } from "@/app/api/apiRequest";
 
 export function useAuth() {
   const router = useRouter();
@@ -14,14 +15,20 @@ export function useAuth() {
   }, [_hasHydrated, token]);
 
   // 로그아웃
-  const logout = () => {
-    clearToken();
-    resetChatStore();
+  const logout = async () => {
+    try {
+      await apiRequest("/users/auth/logout", "POST");
+    } catch (error) {
+      console.error("서버 로그아웃 실패", error);
+    } finally {
+      clearToken();
+      resetChatStore();
 
-    localStorage.removeItem(CLIENT_ID_KEY);
-    sessionStorage.removeItem(WS_TOKEN_KEY);
+      localStorage.removeItem(CLIENT_ID_KEY);
+      sessionStorage.removeItem(WS_TOKEN_KEY);
 
-    router.push("/");
+      router.push("/");
+    }
   };
 
   return { isLogin, token, logout };
